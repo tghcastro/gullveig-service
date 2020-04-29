@@ -26,6 +26,11 @@ public class CompaniesSector {
         enabled = true;
     }
 
+    public CompaniesSector(String name) {
+        this.name = name;
+        this.enabled = true;
+    }
+
     public Long getId() {
         return Id;
     }

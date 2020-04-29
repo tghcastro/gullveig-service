@@ -1,4 +1,4 @@
-package com.tghcastro.gullveig.gullveigcompaniesservice.controllers;
+package com.tghcastro.gullveig.gullveigcompaniesservice.integrationtests;
 
 import com.tghcastro.gullveig.gullveigcompaniesservice.models.CompaniesSector;
 import com.tghcastro.gullveig.gullveigcompaniesservice.repositories.CompaniesSectorRepository;
