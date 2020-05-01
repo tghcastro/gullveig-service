@@ -1,4 +1,4 @@
-package com.tghcastro.gullveig.gullveigcompaniesservice;
+package com.tghcastro.gullveig.companiesservice;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;

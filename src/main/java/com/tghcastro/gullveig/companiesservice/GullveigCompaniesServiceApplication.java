@@ -1,4 +1,4 @@
-package com.tghcastro.gullveig.gullveigcompaniesservice;
+package com.tghcastro.gullveig.companiesservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

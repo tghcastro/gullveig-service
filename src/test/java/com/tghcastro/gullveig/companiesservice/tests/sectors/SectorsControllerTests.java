@@ -1,7 +1,7 @@
-package com.tghcastro.gullveig.gullveigcompaniesservice.companiessectors.controllers;
+package com.tghcastro.gullveig.companiesservice.tests.sectors;
 
-import com.tghcastro.gullveig.gullveigcompaniesservice.repositories.SectorsRepository;
-import com.tghcastro.gullveig.gullveigcompaniesservice.controllers.SectorsController;
+import com.tghcastro.gullveig.companiesservice.repositories.SectorsRepository;
+import com.tghcastro.gullveig.companiesservice.controllers.SectorsController;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

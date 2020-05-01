@@ -1,4 +1,4 @@
-package com.tghcastro.gullveig.gullveigcompaniesservice.models;
+package com.tghcastro.gullveig.companiesservice.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

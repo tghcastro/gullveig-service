@@ -1,8 +1,8 @@
-package com.tghcastro.gullveig.gullveigcompaniesservice.controllers;
+package com.tghcastro.gullveig.companiesservice.controllers;
 
-import com.tghcastro.gullveig.gullveigcompaniesservice.models.Sector;
-import com.tghcastro.gullveig.gullveigcompaniesservice.exceptions.SectorNotFoundException;
-import com.tghcastro.gullveig.gullveigcompaniesservice.repositories.SectorsRepository;
+import com.tghcastro.gullveig.companiesservice.exceptions.SectorNotFoundException;
+import com.tghcastro.gullveig.companiesservice.repositories.SectorsRepository;
+import com.tghcastro.gullveig.companiesservice.models.Sector;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

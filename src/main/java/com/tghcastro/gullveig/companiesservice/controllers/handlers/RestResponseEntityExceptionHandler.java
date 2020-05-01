@@ -1,6 +1,6 @@
-package com.tghcastro.gullveig.gullveigcompaniesservice.controllers.handlers;
+package com.tghcastro.gullveig.companiesservice.controllers.handlers;
 
-import com.tghcastro.gullveig.gullveigcompaniesservice.exceptions.SectorNotFoundException;
+import com.tghcastro.gullveig.companiesservice.exceptions.SectorNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

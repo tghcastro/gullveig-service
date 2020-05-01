@@ -1,7 +1,7 @@
-package com.tghcastro.gullveig.gullveigcompaniesservice.companiessectors.integration;
+package com.tghcastro.gullveig.companiesservice.tests.sectors;
 
-import com.tghcastro.gullveig.gullveigcompaniesservice.models.Sector;
-import com.tghcastro.gullveig.gullveigcompaniesservice.repositories.SectorsRepository;
+import com.tghcastro.gullveig.companiesservice.models.Sector;
+import com.tghcastro.gullveig.companiesservice.repositories.SectorsRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
