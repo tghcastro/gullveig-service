@@ -6,27 +6,29 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity(name="CompaniesSectors")
 @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
-public class CompaniesSector {
+public class Sector {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
 
-    @NotBlank(message = "Name is mandatory")
+    @Size(min = 5, max = 30, message = "Name should have between 5 and 30 characters")
+    @NotEmpty(message = "Name is mandatory")
     private String name;
 
     @NotNull(message = "Enabled is mandatory")
     private boolean enabled;
 
-    public CompaniesSector() {
+    public Sector() {
         enabled = true;
     }
 
-    public CompaniesSector(String name) {
+    public Sector(String name) {
         this.name = name;
         this.enabled = true;
     }
