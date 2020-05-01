@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.tghcastro.gullveig.companiesservice.exceptions.SectorNotFoundException;
 import com.tghcastro.gullveig.companiesservice.models.Sector;
 import com.tghcastro.gullveig.companiesservice.repositories.SectorsRepository;
+import com.tghcastro.gullveig.companiesservice.services.SectorsService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,40 +24,36 @@ import java.util.Map;
 @RestController
 @RequestMapping("api/v1/companiessectors")
 public class SectorsController {
-
     @Autowired
-    public SectorsRepository companiesSectorRepository;
+    private SectorsService sectorsService;
 
     @GetMapping
     public List<Sector> list() {
-        return companiesSectorRepository.findAll();
+        return sectorsService.getAll();
     }
 
     @GetMapping
     @RequestMapping("{id}")
     public Sector get(@PathVariable Long id) {
-        return companiesSectorRepository
-                .findById(id)
-                .orElseThrow(() -> new SectorNotFoundException(id));
+        return sectorsService.getById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Sector create(@Valid @RequestBody Sector sector) {
-        return companiesSectorRepository.saveAndFlush(sector);
+        return sectorsService.create(sector);
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
-        companiesSectorRepository.deleteById(id);
+        sectorsService.delete(id);
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public Sector update(@PathVariable Long id, @RequestBody Sector sector) {
-        Sector existentSector = companiesSectorRepository.getOne(id);
-        BeanUtils.copyProperties(sector, existentSector, "id");
-        return companiesSectorRepository.saveAndFlush(existentSector);
+        return sectorsService.update(id, sector);
+
     }
 
     // TODO: Improve error handling
