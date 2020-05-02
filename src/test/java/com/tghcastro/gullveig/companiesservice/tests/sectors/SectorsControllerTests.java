@@ -33,7 +33,7 @@ public class SectorsControllerTests {
     @Autowired
     private MockMvc mockMvc;
 
-    private String uri = "/api/v1/companiessectors";
+    private String uri = "/api/v1/sectors";
 
     @Before
     public void before() {
