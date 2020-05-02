@@ -2,6 +2,7 @@ package com.tghcastro.gullveig.companiesservice.tests.sectors;
 
 import com.tghcastro.gullveig.companiesservice.repositories.SectorsRepository;
 import com.tghcastro.gullveig.companiesservice.controllers.SectorsController;
+import com.tghcastro.gullveig.companiesservice.services.SectorsServiceImpl;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -20,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @WebMvcTest
 @AutoConfigureMockMvc
+@ContextConfiguration(classes = {SectorsServiceImpl.class, SectorsController.class})
 public class SectorsControllerTests {
     @MockBean
     private SectorsRepository repository;
@@ -53,6 +56,7 @@ public class SectorsControllerTests {
                 .andExpect(MockMvcResultMatchers.status().isCreated());
     }
 
+    //TODO: How I can test this scenario as UnitTest
     @Test
     public void whenCreatingSectorWithNameHavingLessThan5Chars_ShouldReturnBadRequest() throws Exception {
         MediaType textPlainUtf8 = new MediaType(MediaType.TEXT_PLAIN, Charset.forName("UTF-8"));
@@ -69,6 +73,7 @@ public class SectorsControllerTests {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
+    //TODO: How I can test this scenario as UnitTest
     @Test
     public void whenCreatingSectorWithNameHavingMoreThan30Chars_ShouldReturnBadRequest() throws Exception {
         MediaType textPlainUtf8 = new MediaType(MediaType.TEXT_PLAIN, Charset.forName("UTF-8"));
