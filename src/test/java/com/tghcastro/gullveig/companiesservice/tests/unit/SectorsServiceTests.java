@@ -61,8 +61,9 @@ public class SectorsServiceTests {
         assertThat(foundSector).isEqualTo(fakeSector);
     }
 
+    //TODO: Refactor test and application for this scenario
     @Test
-    public void test_getById_shouldReturnThrowException_whenNoSectorFound() {
+    public void test_getById_shouldThrowException_whenNoSectorFound() {
         long nonExistentSector = 1;
         when(sectorsRepository.findById(nonExistentSector)).thenThrow(SectorNotFoundException.class);
 
@@ -80,7 +81,7 @@ public class SectorsServiceTests {
     }
 
     @Test
-    public void test_update_shouldReturnCreatedSector() {
+    public void test_update_shouldReturnUpdatedSector() {
         Sector originalSector = new Sector("SomeSector");
         originalSector.setId((long)1);
         originalSector.setEnabled(true);
