@@ -4,15 +4,18 @@ import com.tghcastro.gullveig.companiesservice.exceptions.SectorNotFoundExceptio
 import com.tghcastro.gullveig.companiesservice.models.Sector;
 import com.tghcastro.gullveig.companiesservice.repositories.SectorsRepository;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class SectorsServiceImpl implements SectorsService {
-    @Autowired
-    private SectorsRepository sectorsRepository;
+
+    private final SectorsRepository sectorsRepository;
+
+    public SectorsServiceImpl(SectorsRepository sectorsRepository) {
+        this.sectorsRepository = sectorsRepository;
+    }
 
     @Override
     public Sector getById(Long id) {

@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 @Entity(name="CompaniesSectors")
 @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
@@ -55,5 +56,20 @@ public class Sector {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Sector sector = (Sector) o;
+        return enabled == sector.enabled &&
+                Objects.equals(Id, sector.Id) &&
+                Objects.equals(name, sector.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(Id, name, enabled);
     }
 }
