@@ -1,5 +1,15 @@
 # Gullveig Companies Service
 
+## About
+
+### Docker
+    
+```shell script
+docker pull tghcastro/gullveig-companies-service´
+```
+
+DockerHub Repo: https://hub.docker.com/r/tghcastro/gullveig-companies-service
+   
 ## Build commands
 
 ```shell script
