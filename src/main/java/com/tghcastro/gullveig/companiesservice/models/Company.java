@@ -23,7 +23,7 @@ public class Company {
     private boolean enabled;
 
     @OneToOne
-    @JoinColumn(name = "sector_id")
+    @JoinColumn(name = "sector_id", referencedColumnName = "id")
     private Sector sector;
 
     public Company() {
