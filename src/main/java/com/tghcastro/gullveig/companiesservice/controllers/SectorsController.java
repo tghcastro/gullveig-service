@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.tghcastro.gullveig.companiesservice.models.Sector;
 import com.tghcastro.gullveig.companiesservice.services.SectorsService;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,6 +22,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("api/v1/sectors")
 public class SectorsController {
+    @Autowired
+    private MeterRegistry meterRegistry;
+
     @Autowired
     private SectorsService sectorsService;
 
