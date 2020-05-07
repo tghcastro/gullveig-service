@@ -1,0 +1,118 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-test-configmap
+data:
+  ENV: test
+  POSTGRES_USER: admin
+  POSTGRES_PASSWORD: admin
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-test
+  labels:
+    app: postgres-test
+spec:
+  replicas: 1
+  minReadySeconds: 10
+  selector:
+    matchLabels:
+      app: postgres-test
+  template:
+    metadata:
+      labels:
+        app: postgres-test
+    spec:
+      containers:
+        - name: postgres-test
+          image: postgres
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: postgres-test-configmap-volume
+              mountPath: /etc/config
+          envFrom:
+            - configMapRef:
+                name: postgres-test-configmap
+      volumes:
+        - name: postgres-test-configmap-volume
+          configMap:
+            name: postgres-test-configmap
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: postgres-test
+  ports:
+    - name: "5432"
+      port: 5432
+      targetPort: 5432
+
+
+---
+# servico !!!!
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: companies-service-test-configmap
+data:
+  SPRING_PROFILES_ACTIVE: test
+  SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-service:5432/gullveig-companies-service
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: companies-service
+  labels:
+    app: companies-service
+spec:
+  replicas: 1
+  minReadySeconds: 10
+  selector:
+    matchLabels:
+      app: companies-service
+  template:
+    metadata:
+      labels:
+        app: companies-service
+    spec:
+      containers:
+        - name: companies-service
+          image: tghcastro/gullveig-companies-service:0.1.0
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: companies-service-test-configmap-volume
+              mountPath: /etc/config
+          envFrom:
+            - configMapRef:
+                name: companies-service-test-configmap
+      volumes:
+        - name: companies-service-test-configmap-volume
+          configMap:
+            name: companies-service-test-configmap
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: companies-service-loadbalancer
+spec:
+  type: LoadBalancer
+  selector:
+    app: companies-service
+  ports:
+    - name: "8080"
+      port: 8080
+      targetPort: 8080
