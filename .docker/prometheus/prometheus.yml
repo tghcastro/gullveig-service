@@ -1,0 +1,17 @@
+global:
+  scrape_interval: 5s
+  external_labels:
+    monitor: 'local-monitor'
+
+scrape_configs:
+
+  - job_name: 'docker-managers'
+    scrape_interval: 10s
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['host.docker.internal:50501']
+
+  - job_name: 'companies-service'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['gullveig-companies-service:8080']
