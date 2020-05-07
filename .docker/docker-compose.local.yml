@@ -11,6 +11,7 @@ services:
       - local-network
     ports:
       - 10000:8080
+    command: '--spring.profiles.active=local'
 
   gullveig-prometheus:
     container_name: gullveig-prometheus
