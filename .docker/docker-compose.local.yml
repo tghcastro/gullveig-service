@@ -11,22 +11,59 @@ services:
       - local-network
     ports:
       - 10000:8080
-    expose:
-      - 8080
 
-  gullveig-monitoring:
-    container_name: gullveig-monitoring
-    build:
-      context: .
-      dockerfile: prometheus/Dockerfile
-    image: tghcastro/prometheus
+  gullveig-prometheus:
+    container_name: gullveig-prometheus
+    image: prom/prometheus:v2.18.0
     networks:
       - local-network
     ports:
       - 9090:9090
-    expose:
-      - 9090
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    restart: always
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+
+#  gullveig-alertmanager:
+#    container_name: gullveig-alertmanager
+#    image: prom/alertmanager
+#    networks:
+#      - local-network
+#    ports:
+#      - 9093:9093
+#    volumes:
+#      - ./alertmanager.yml:/etc/prometheus/alertmanager.yml
+#    restart: always
+#    command:
+#      - '--config.file=/etc/prometheus/alertmanager.yml'
+#      - '--storage.path=/alertmanager'
+
+  gullveig-grafana:
+    container_name: gullveig-grafana
+    image: grafana/grafana
+    user: "472"
+    depends_on:
+      - gullveig-prometheus
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+    env_file:
+      - ./grafana/grafana.env
+    networks:
+      - local-network
+    restart: always
 
 networks:
   local-network:
     driver: bridge
+
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
