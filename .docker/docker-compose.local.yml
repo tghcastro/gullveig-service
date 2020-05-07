@@ -1,0 +1,32 @@
+version: "3.7"
+services:
+
+  gullveig-companies-service:
+    container_name: gullveig-companies-service
+    build:
+      context: ../
+      dockerfile: .docker/Dockerfile
+    image: tghcastro/gullveig-companies-service
+    networks:
+      - local-network
+    ports:
+      - 10000:8080
+    expose:
+      - 8080
+
+  gullveig-monitoring:
+    container_name: gullveig-monitoring
+    build:
+      context: .
+      dockerfile: prometheus/Dockerfile
+    image: tghcastro/prometheus
+    networks:
+      - local-network
+    ports:
+      - 9090:9090
+    expose:
+      - 9090
+
+networks:
+  local-network:
+    driver: bridge

@@ -24,4 +24,6 @@ docker build -t tghcastro/gullveig-companies-service -f ./.docker/Dockerfile .
 docker run -p 8080:8080 --name gullveig-companies-service tghcastro/gullveig-companies-service
 
 docker push tghcastro/gullveig-companies-service
+
+docker-compose -f .docker/docker-compose.local.yml up --build --force-recreate --remove-orphans
 ```
