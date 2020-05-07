@@ -26,4 +26,6 @@ docker run -p 8080:8080 --name gullveig-companies-service tghcastro/gullveig-com
 docker push tghcastro/gullveig-companies-service
 
 docker-compose -f .docker/docker-compose.local.yml up --build --force-recreate --remove-orphans
+
+docker-compose -f .docker/docker-compose.local.yml up gullveig-prometheus
 ```
