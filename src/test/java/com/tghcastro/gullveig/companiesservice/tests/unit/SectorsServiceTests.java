@@ -5,6 +5,7 @@ import com.tghcastro.gullveig.companiesservice.exceptions.SectorNotFoundExceptio
 import com.tghcastro.gullveig.companiesservice.models.Sector;
 import com.tghcastro.gullveig.companiesservice.repositories.SectorsRepository;
 import com.tghcastro.gullveig.companiesservice.services.SectorsServiceImpl;
+import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,8 @@ public class SectorsServiceTests {
     void initUseCase() {
         sectorsRepository = Mockito.mock(SectorsRepository.class);
         meterRegistry = Mockito.mock(MeterRegistry.class);
+        Counter someCounter = Mockito.mock(Counter.class);
+        when(meterRegistry.counter(anyString())).thenReturn(someCounter);
         sectorsService = new SectorsServiceImpl(sectorsRepository, meterRegistry);
     }
 
