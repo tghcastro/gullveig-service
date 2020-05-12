@@ -13,7 +13,7 @@ DockerHub Repo: https://hub.docker.com/r/tghcastro/gullveig-companies-service
 ## Build commands
 
 ```shell script
-mvn clean install
+./gradlew bootRun --args='--spring.profiles.active=local'
 
 // Unpack files so we can create Dockerimage caching Spring dependencies
 mkdir -p target/dependency && (cd target/dependency; jar -xf ../gullveig-companies-service*.jar)
