@@ -7,7 +7,6 @@ plugins {
     id 'maven-publish'
     id 'org.springframework.boot' version '2.2.7.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-    id "com.gorylenko.gradle-git-properties" version "2.2.1"
 }
 
 repositories {
@@ -41,12 +40,6 @@ publishing {
             from(components.java)
         }
     }
-}
-
-gitProperties {
-    gitPropertiesName = "git.properties"
-    gitPropertiesResourceDir = "$buildDir/classes"
-    keys = ['git.commit.id']
 }
 
 test {
