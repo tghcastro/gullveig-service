@@ -1,6 +1,7 @@
 package com.tghcastro.gullveig.companiesservice.tests.unit;
 
 import autofixture.publicinterface.Any;
+import com.tghcastro.gullveig.companiesservice.exceptions.SectorAlreadyExistentException;
 import com.tghcastro.gullveig.companiesservice.exceptions.SectorNotFoundException;
 import com.tghcastro.gullveig.companiesservice.models.Sector;
 import com.tghcastro.gullveig.companiesservice.repositories.SectorsRepository;
@@ -84,6 +85,21 @@ public class SectorsServiceTests {
         Sector createdSector = sectorsService.create(fakeSector);
 
         assertThat(createdSector).isEqualTo(fakeSector);
+    }
+
+    @Test
+    public void test_create_shouldNotAllowSectorsWithSameName(){
+        String sameName = "mysector";
+
+        Sector sectorAlreadyExistent = Any.of(Sector.class);
+        sectorAlreadyExistent.setName(sameName);
+
+        Sector newSector = Any.of(Sector.class);
+        newSector.setName(sameName);
+
+        when(sectorsRepository.getByName(newSector.getName())).thenReturn(Optional.of(sectorAlreadyExistent));
+
+        assertThrows(SectorAlreadyExistentException.class, () -> sectorsService.create(newSector));
     }
 
     @Test

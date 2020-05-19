@@ -1,5 +1,6 @@
 package com.tghcastro.gullveig.companiesservice.services;
 
+import com.tghcastro.gullveig.companiesservice.exceptions.SectorAlreadyExistentException;
 import com.tghcastro.gullveig.companiesservice.exceptions.SectorNotFoundException;
 import com.tghcastro.gullveig.companiesservice.models.Sector;
 import com.tghcastro.gullveig.companiesservice.repositories.SectorsRepository;
@@ -9,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SectorsServiceImpl implements SectorsService {
@@ -41,6 +43,13 @@ public class SectorsServiceImpl implements SectorsService {
 
     @Override
     public Sector create(Sector sector) {
+        sectorsRepository
+                .getByName(sector.getName())
+                .ifPresent(foundSector -> {
+                    throw new SectorAlreadyExistentException(foundSector);
+                });
+
+
         Sector createdSector = sectorsRepository.saveAndFlush(sector);
         if (createdSector != null) {
             sectorsCreatedCounter.increment();
