@@ -18,8 +18,7 @@ DockerHub Repo: https://hub.docker.com/r/tghcastro/gullveig-companies-service
 // Unpack files so we can create Dockerimage caching Spring dependencies
 mkdir -p target/dependency && (cd target/dependency; jar -xf ../gullveig-companies-service*.jar)
 
-docker build -t tghcastro/gullveig-companies-service .
-docker build -t tghcastro/gullveig-companies-service -f ./.docker/Dockerfile .
+docker build -t tghcastro/gullveig-companies-service -f ./companies-service/Dockerfile .
 
 docker run -p 8080:8080 --name gullveig-companies-service tghcastro/gullveig-companies-service
 
