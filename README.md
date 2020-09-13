@@ -1,6 +1,16 @@
-# Gullveig Companies Service
+# Gullveig Service
 
 ## About
+
+## Modules
+
+### Companies Service
+
+Running Port: 8080
+
+### Shares Data Service
+
+Running Port: 8090
 
 ### Docker
     
