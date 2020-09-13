@@ -421,12 +421,12 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:{{shares-data-service-port}}/actuator/prometheus",
+									"raw": "http://localhost:{{stocks-service-port}}/actuator/prometheus",
 									"protocol": "http",
 									"host": [
 										"localhost"
 									],
-									"port": "{{shares-data-service-port}}",
+									"port": "{{stocks-service-port}}",
 									"path": [
 										"actuator",
 										"prometheus"
@@ -441,12 +441,12 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:{{shares-data-service-port}}/actuator/metrics",
+									"raw": "http://localhost:{{stocks-service-port}}/actuator/metrics",
 									"protocol": "http",
 									"host": [
 										"localhost"
 									],
-									"port": "{{shares-data-service-port}}",
+									"port": "{{stocks-service-port}}",
 									"path": [
 										"actuator",
 										"metrics"
@@ -461,12 +461,12 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:{{shares-data-service-port}}/actuator/health",
+									"raw": "http://localhost:{{stocks-service-port}}/actuator/health",
 									"protocol": "http",
 									"host": [
 										"localhost"
 									],
-									"port": "{{shares-data-service-port}}",
+									"port": "{{stocks-service-port}}",
 									"path": [
 										"actuator",
 										"health"
@@ -481,12 +481,12 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:{{shares-data-service-port}}/actuator/",
+									"raw": "http://localhost:{{stocks-service-port}}/actuator/",
 									"protocol": "http",
 									"host": [
 										"localhost"
 									],
-									"port": "{{shares-data-service-port}}",
+									"port": "{{stocks-service-port}}",
 									"path": [
 										"actuator",
 										""
@@ -501,12 +501,12 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:{{shares-data-service-port}}/actuator/info",
+									"raw": "http://localhost:{{stocks-service-port}}/actuator/info",
 									"protocol": "http",
 									"host": [
 										"localhost"
 									],
-									"port": "{{shares-data-service-port}}",
+									"port": "{{stocks-service-port}}",
 									"path": [
 										"actuator",
 										"info"
@@ -514,22 +514,287 @@
 								}
 							},
 							"response": []
-						},
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Stocks",
+					"item": [
 						{
-							"name": "INFO Copy",
+							"name": "Get all stocks",
 							"request": {
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:{{shares-data-service-port}}/actuator/info",
+									"raw": "http://localhost:{{stocks-service-port}}/api/v1/stocks",
 									"protocol": "http",
 									"host": [
 										"localhost"
 									],
-									"port": "{{shares-data-service-port}}",
+									"port": "{{stocks-service-port}}",
 									"path": [
-										"actuator",
-										"info"
+										"api",
+										"v1",
+										"stocks"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get an existent stock by id",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "49da6a24-d381-44fd-bfe8-5b4c2b7718d5",
+										"exec": [
+											"stockServicePort = pm.environment.get(\"stocks-service-port\");",
+											"",
+											"pm.sendRequest(\"http://localhost:\" + stockServicePort + \"/api/v1/stocks\", function (err, response) {",
+											"    console.log(response.json());",
+											"    jsonCount = response.json().length;",
+											"    if (jsonCount<1){",
+											"        throw \"No registry found!\";",
+											"    }",
+											"    stockId = response.json()[getRandomInt(0,jsonCount -1)].id;",
+											"    pm.environment.set(\"auto-stock-id\", stockId);",
+											"});",
+											"",
+											"function getRandomInt(min, max) {",
+											"    min = Math.ceil(min);",
+											"    max = Math.floor(max);",
+											"    id = Math.floor(Math.random() * (max - min)) + min;",
+											"    console.log(\"Random Index: \" + id)",
+											"    return id",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{stocks-service-port}}/api/v1/stocks/{{auto-stock-id}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{stocks-service-port}}",
+									"path": [
+										"api",
+										"v1",
+										"stocks",
+										"{{auto-stock-id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get an inexistent stock by id",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "f73da059-45c4-41a1-a356-8b76a88faf9f",
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{stocks-service-port}}/api/v1/stocks/999999",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{stocks-service-port}}",
+									"path": [
+										"api",
+										"v1",
+										"stocks",
+										"999999"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create stock",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "00306f0c-7a1a-4639-bc83-ccdb85558041",
+										"exec": [
+											"pm.environment.set(\"auto-new-ticker\", \"AA\" + Date.now().toString());"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"ticker\": \"{{auto-new-ticker}}\",\n    \"enabled\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:{{stocks-service-port}}/api/v1/stocks",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{stocks-service-port}}",
+									"path": [
+										"api",
+										"v1",
+										"stocks"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update an existent stock",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "e622f6c7-44e4-4a0f-916d-be3d456225f9",
+										"exec": [
+											"stockServicePort = pm.environment.get(\"stocks-service-port\");",
+											"",
+											"pm.sendRequest(\"http://localhost:\" + stockServicePort + \"/api/v1/stocks\", function (err, response) {",
+											"    console.log(response.json());",
+											"    jsonCount = response.json().length;",
+											"    if (jsonCount<1){",
+											"        throw \"No registry found!\";",
+											"    }",
+											"    stockId = response.json()[getRandomInt(0,jsonCount -1)].id;",
+											"    pm.environment.set(\"auto-stock-id\", stockId);",
+											"    pm.environment.set(\"auto-new-ticker\", \"ZZ\" + Date.now().toString());",
+											"});",
+											"",
+											"function getRandomInt(min, max) {",
+											"    min = Math.ceil(min);",
+											"    max = Math.floor(max);",
+											"    id = Math.floor(Math.random() * (max - min)) + min;",
+											"    console.log(\"Random Index: \" + id)",
+											"    return id",
+											"}",
+											"",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"ticker\": \"{{auto-new-ticker}}\",\n    \"enabled\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:{{stocks-service-port}}/api/v1/stocks/{{auto-stock-id}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{stocks-service-port}}",
+									"path": [
+										"api",
+										"v1",
+										"stocks",
+										"{{auto-stock-id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete an existent stock",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "9b5a8e2c-81c4-4f39-b5f0-18e7282942ec",
+										"exec": [
+											"stockServicePort = pm.environment.get(\"stocks-service-port\");",
+											"",
+											"pm.sendRequest(\"http://localhost:\" + stockServicePort + \"/api/v1/stocks\", function (err, response) {",
+											"    console.log(response.json());",
+											"    jsonCount = response.json().length;",
+											"    if (jsonCount<1){",
+											"        throw \"No registry found!\";",
+											"    }",
+											"    stockId = response.json()[getRandomInt(0,jsonCount -1)].id;",
+											"    pm.environment.set(\"auto-stock-id\", stockId);",
+											"});",
+											"",
+											"function getRandomInt(min, max) {",
+											"    min = Math.ceil(min);",
+											"    max = Math.floor(max);",
+											"    id = Math.floor(Math.random() * (max - min)) + min;",
+											"    console.log(\"Random Index: \" + id)",
+											"    return id",
+											"}",
+											"",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"ticker\": \"{{auto-new-ticker}}\",\n    \"enabled\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:{{stocks-service-port}}/api/v1/stocks/{{auto-stock-id}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{stocks-service-port}}",
+									"path": [
+										"api",
+										"v1",
+										"stocks",
+										"{{auto-stock-id}}"
 									]
 								}
 							},
