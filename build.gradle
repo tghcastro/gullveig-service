@@ -7,7 +7,7 @@ plugins {
 subprojects {
     group = 'com.tghcastro.gullveig'
     version = '0.0.1-SNAPSHOT'
-    description = 'companies-service'
+    description = 'gullveig-service'
     sourceCompatibility = '1.8'
 
     apply plugin: 'java'

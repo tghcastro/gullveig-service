@@ -1,4 +1,4 @@
-package com.tghcastro.gullveig.sharesdataservice;
+package com.tghcastro.gullveig.stocks.service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
