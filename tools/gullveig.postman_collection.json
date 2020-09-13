@@ -1,0 +1,569 @@
+{
+	"info": {
+		"_postman_id": "e457f704-8205-4835-ab6f-d6bcbfdd5d8a",
+		"name": "gullveig",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "companies-service",
+			"item": [
+				{
+					"name": "Companies",
+					"item": [
+						{
+							"name": "GET COMPANIES",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{companies-service-port}}/api/v1/companies",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{companies-service-port}}",
+									"path": [
+										"api",
+										"v1",
+										"companies"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET COMPANIES BY ID",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "6cd87d9e-54d7-4be1-aab2-5289d351c891",
+										"exec": [
+											"pm.environment.set(\"company-id\", \"1\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{companies-service-port}}/api/v1/companies/{{company-id}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{companies-service-port}}",
+									"path": [
+										"api",
+										"v1",
+										"companies",
+										"{{company-id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST COMPANIES",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Coca-Cola Co.\",\n    \"enabled\": true,\n    \"sector\": {\n        \"id\": 1\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:{{companies-service-port}}/api/v1/companies/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{companies-service-port}}",
+									"path": [
+										"api",
+										"v1",
+										"companies",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT COMPANIES",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"id\": 1,\n    \"name\": \"Updated Company\",\n    \"enabled\": true,\n    \"sector\": {\n        \"id\": 1\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:{{companies-service-port}}/api/v1/companies/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{companies-service-port}}",
+									"path": [
+										"api",
+										"v1",
+										"companies",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE COMPANY",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{companies-service-port}}/api/v1/companies/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{companies-service-port}}",
+									"path": [
+										"api",
+										"v1",
+										"companies",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Sectors",
+					"item": [
+						{
+							"name": "GET SECTORS",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{companies-service-port}}/api/v1/sectors",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{companies-service-port}}",
+									"path": [
+										"api",
+										"v1",
+										"sectors"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET SECTORS BY ID",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "ce749b11-1944-4539-9d48-264852fed801",
+										"exec": [
+											"pm.globals.set(\"sector-id\", \"1\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{companies-service-port}}/api/v1/sectors/{{sector-id}}",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{companies-service-port}}",
+									"path": [
+										"api",
+										"v1",
+										"sectors",
+										"{{sector-id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST SECTORS",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Consumer Staples\",\r\n    \"enabled\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:{{companies-service-port}}/api/v1/sectors",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{companies-service-port}}",
+									"path": [
+										"api",
+										"v1",
+										"sectors"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT SECTORS",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Updated Sector\",\r\n    \"enabled\": false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:{{companies-service-port}}/api/v1/sectors/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{companies-service-port}}",
+									"path": [
+										"api",
+										"v1",
+										"sectors",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE SECTOR",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{companies-service-port}}/api/v1/sectors/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{companies-service-port}}",
+									"path": [
+										"api",
+										"v1",
+										"sectors",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Actuator",
+					"item": [
+						{
+							"name": "PROMETHEUS",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{companies-service-port}}/actuator/prometheus",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{companies-service-port}}",
+									"path": [
+										"actuator",
+										"prometheus"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "METRICS",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{companies-service-port}}/actuator/metrics",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{companies-service-port}}",
+									"path": [
+										"actuator",
+										"metrics"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "HEALTH",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{companies-service-port}}/actuator/health",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{companies-service-port}}",
+									"path": [
+										"actuator",
+										"health"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ACTUATOR",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{companies-service-port}}/actuator/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{companies-service-port}}",
+									"path": [
+										"actuator",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "INFO",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{companies-service-port}}/actuator/info",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{companies-service-port}}",
+									"path": [
+										"actuator",
+										"info"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "shares-data-service",
+			"item": [
+				{
+					"name": "Actuator",
+					"item": [
+						{
+							"name": "PROMETHEUS",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{shares-data-service-port}}/actuator/prometheus",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{shares-data-service-port}}",
+									"path": [
+										"actuator",
+										"prometheus"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "METRICS",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{shares-data-service-port}}/actuator/metrics",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{shares-data-service-port}}",
+									"path": [
+										"actuator",
+										"metrics"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "HEALTH",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{shares-data-service-port}}/actuator/health",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{shares-data-service-port}}",
+									"path": [
+										"actuator",
+										"health"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ACTUATOR",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{shares-data-service-port}}/actuator/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{shares-data-service-port}}",
+									"path": [
+										"actuator",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "INFO",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{shares-data-service-port}}/actuator/info",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{shares-data-service-port}}",
+									"path": [
+										"actuator",
+										"info"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "INFO Copy",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{shares-data-service-port}}/actuator/info",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{shares-data-service-port}}",
+									"path": [
+										"actuator",
+										"info"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "35d6a649-6e19-4193-aa49-d8a89f5f7fdc",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "39c1adbf-f575-4ba9-b504-6d7875ae9aba",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
