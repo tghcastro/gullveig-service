@@ -1,8 +1,8 @@
-package gullveig.companiesservice.services;
+package com.tghcastro.gullveig.companies.service.services;
 
-import gullveig.companiesservice.exceptions.CompanyNotFoundException;
-import gullveig.companiesservice.models.Company;
-import gullveig.companiesservice.repositories.CompaniesRepository;
+import com.tghcastro.gullveig.companies.service.exceptions.CompanyNotFoundException;
+import com.tghcastro.gullveig.companies.service.models.Company;
+import com.tghcastro.gullveig.companies.service.repositories.CompaniesRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 

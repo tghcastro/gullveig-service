@@ -1,4 +1,4 @@
-package gullveig.companiesservice.configuration;
+package com.tghcastro.gullveig.companies.service.configuration;
 
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;

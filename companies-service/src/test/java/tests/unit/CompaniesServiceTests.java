@@ -1,12 +1,12 @@
 package tests.unit;
 
 import autofixture.publicinterface.Any;
-import gullveig.companiesservice.exceptions.CompanyNotFoundException;
-import gullveig.companiesservice.exceptions.SectorNotFoundException;
-import gullveig.companiesservice.models.Company;
-import gullveig.companiesservice.repositories.CompaniesRepository;
-import gullveig.companiesservice.services.CompaniesService;
-import gullveig.companiesservice.services.CompaniesServiceImpl;
+import com.tghcastro.gullveig.companies.service.exceptions.CompanyNotFoundException;
+import com.tghcastro.gullveig.companies.service.exceptions.SectorNotFoundException;
+import com.tghcastro.gullveig.companies.service.models.Company;
+import com.tghcastro.gullveig.companies.service.repositories.CompaniesRepository;
+import com.tghcastro.gullveig.companies.service.services.CompaniesService;
+import com.tghcastro.gullveig.companies.service.services.CompaniesServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

@@ -1,7 +1,7 @@
-package gullveig.companiesservice.controllers;
+package com.tghcastro.gullveig.companies.service.controllers;
 
-import gullveig.companiesservice.models.Company;
-import gullveig.companiesservice.services.CompaniesService;
+import com.tghcastro.gullveig.companies.service.models.Company;
+import com.tghcastro.gullveig.companies.service.services.CompaniesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

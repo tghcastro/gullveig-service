@@ -1,11 +1,11 @@
 package tests.unit;
 
 import autofixture.publicinterface.Any;
-import gullveig.companiesservice.exceptions.SectorAlreadyExistentException;
-import gullveig.companiesservice.exceptions.SectorNotFoundException;
-import gullveig.companiesservice.models.Sector;
-import gullveig.companiesservice.repositories.SectorsRepository;
-import gullveig.companiesservice.services.SectorsServiceImpl;
+import com.tghcastro.gullveig.companies.service.exceptions.SectorAlreadyExistentException;
+import com.tghcastro.gullveig.companies.service.exceptions.SectorNotFoundException;
+import com.tghcastro.gullveig.companies.service.models.Sector;
+import com.tghcastro.gullveig.companies.service.repositories.SectorsRepository;
+import com.tghcastro.gullveig.companies.service.services.SectorsServiceImpl;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.junit.jupiter.api.BeforeEach;

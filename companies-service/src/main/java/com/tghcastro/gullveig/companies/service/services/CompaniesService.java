@@ -1,6 +1,6 @@
-package gullveig.companiesservice.services;
+package com.tghcastro.gullveig.companies.service.services;
 
-import gullveig.companiesservice.models.Company;
+import com.tghcastro.gullveig.companies.service.models.Company;
 
 import java.util.List;
 import java.util.Optional;

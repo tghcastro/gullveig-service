@@ -1,10 +1,10 @@
-package gullveig.companiesservice.controllers;
+package com.tghcastro.gullveig.companies.service.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import gullveig.companiesservice.models.Sector;
-import gullveig.companiesservice.services.SectorsService;
+import com.tghcastro.gullveig.companies.service.models.Sector;
+import com.tghcastro.gullveig.companies.service.services.SectorsService;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,9 +1,9 @@
-package gullveig.companiesservice.services;
+package com.tghcastro.gullveig.companies.service.services;
 
-import gullveig.companiesservice.exceptions.SectorAlreadyExistentException;
-import gullveig.companiesservice.exceptions.SectorNotFoundException;
-import gullveig.companiesservice.models.Sector;
-import gullveig.companiesservice.repositories.SectorsRepository;
+import com.tghcastro.gullveig.companies.service.exceptions.SectorAlreadyExistentException;
+import com.tghcastro.gullveig.companies.service.exceptions.SectorNotFoundException;
+import com.tghcastro.gullveig.companies.service.models.Sector;
+import com.tghcastro.gullveig.companies.service.repositories.SectorsRepository;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.BeanUtils;

@@ -1,6 +1,6 @@
-package gullveig.companiesservice.repositories;
+package com.tghcastro.gullveig.companies.service.repositories;
 
-import gullveig.companiesservice.models.Company;
+import com.tghcastro.gullveig.companies.service.models.Company;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
