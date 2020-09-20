@@ -8,9 +8,32 @@
 
 Running Port: 8080
 
-### Shares Data Service
+#### Commands
+
+- Running Application
+```shell
+java -jar ./companies-service/build/libs/companies-service-0.0.1.SNAPSHOT.jar 
+```
+
+### Stocks Service
 
 Running Port: 8090
+
+#### Commands
+
+- Running Application
+```shell
+java -jar ./stocks-service/build/libs/stocks-service-0.0.1.SNAPSHOT.jar 
+```
+
+## Base Commands
+
+```shell script
+gradle clean build
+```
+
+
+
 
 ## Old stuff
 
@@ -30,7 +53,7 @@ DockerHub Repo: https://hub.docker.com/r/tghcastro/gullveig-companies-service
 // Unpack files so we can create Dockerimage caching Spring dependencies
 mkdir -p target/dependency && (cd target/dependency; jar -xf ../gullveig-companies-service*.jar)
 
-docker build -t tghcastro/gullveig-companies-service -f ./companies-service/Dockerfile .
+docker build -t gullveig/companies-service -f ./companies-service/Dockerfile .
 
 docker run -p 8080:8080 --name gullveig-companies-service tghcastro/gullveig-companies-service
 

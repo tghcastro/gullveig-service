@@ -7,7 +7,7 @@ COPY gradle/wrapper/gradle-wrapper.properties ./gradle/wrapper/gradle-wrapper.pr
 COPY build.gradle .
 COPY settings.gradle .
 COPY gradlew .
-COPY src src
+COPY ./companies-service/src src
 
 RUN ./gradlew clean build
 RUN (cd build/libs; jar -xf *.jar)
@@ -21,4 +21,4 @@ COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
 
 # TODO: fix hardcoded ""-Dspring.profiles.active=local" parameter
-ENTRYPOINT ["java","-Dspring.profiles.active=local", "-cp","app:app/lib/*","gullveig.companiesservice.GullveigCompaniesServiceApplication"]
+ENTRYPOINT ["java","-Dspring.profiles.active=local", "-cp","app:app/lib/*","com.tghcastro.gullveig.companies.service.CompaniesServiceApplication"]
