@@ -13,6 +13,9 @@ Running Port: 8080
 - Running Application
 ```shell
 java -jar ./companies-service/build/libs/companies-service-0.0.1.SNAPSHOT.jar 
+
+docker build -t gullveig/companies-service -f ./companies-service/Dockerfile .
+docker run -p 8080:8080 -e SPRING_PROFILES_ACTIVE=local --name companies-service gullveig/companies-service
 ```
 
 ### Stocks Service
@@ -24,42 +27,18 @@ Running Port: 8090
 - Running Application
 ```shell
 java -jar ./stocks-service/build/libs/stocks-service-0.0.1.SNAPSHOT.jar 
+
+docker build -t gullveig/stocks-service -f ./stocks-service/Dockerfile .
+docker run -p 8090:8090 -e SPRING_PROFILES_ACTIVE=local --name stocks-service gullveig/stocks-service
 ```
 
-## Base Commands
+## All Environment Commands
 
 ```shell script
 gradle clean build
+
+docker-compose -f .environment/docker-compose.local.yml up --build --remove-orphans --force-recreate
+
 ```
 
 
-
-
-## Old stuff
-
-### Docker
-    
-```shell script
-docker pull tghcastro/gullveig-companies-service
-```
-
-DockerHub Repo: https://hub.docker.com/r/tghcastro/gullveig-companies-service
-   
-## Build commands
-
-```shell script
-./gradlew bootRun --args='--spring.profiles.active=local'
-
-// Unpack files so we can create Dockerimage caching Spring dependencies
-mkdir -p target/dependency && (cd target/dependency; jar -xf ../gullveig-companies-service*.jar)
-
-docker build -t gullveig/companies-service -f ./companies-service/Dockerfile .
-
-docker run -p 8080:8080 --name gullveig-companies-service tghcastro/gullveig-companies-service
-
-docker push tghcastro/gullveig-companies-service
-
-docker-compose -f .docker/docker-compose.local.yml up --build --force-recreate --remove-orphans
-
-docker-compose -f .docker/docker-compose.local.yml up gullveig-prometheus
-```

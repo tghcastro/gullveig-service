@@ -1,0 +1,36 @@
+version: "3.7"
+services:
+
+  companies-service:
+    container_name: companies-service
+    build:
+      context: ..
+      dockerfile: ./companies-service/Dockerfile
+    image: gullveig/companies-service
+    networks:
+      - local-network
+    ports:
+      - 8080:8080
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+
+  stocks-service:
+    container_name: stocks-service
+    build:
+      context: ..
+      dockerfile: ./stocks-service/Dockerfile
+    image: gullveig/stocks-service
+    networks:
+      - local-network
+    ports:
+      - 8090:8090
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+
+networks:
+  local-network:
+    driver: bridge
+
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
