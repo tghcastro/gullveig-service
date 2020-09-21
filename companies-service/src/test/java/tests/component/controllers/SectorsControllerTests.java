@@ -1,4 +1,4 @@
-package tests.sectors;
+package tests.component.controllers;
 
 import com.tghcastro.gullveig.companies.service.controllers.SectorsController;
 import com.tghcastro.gullveig.companies.service.repositories.SectorsRepository;

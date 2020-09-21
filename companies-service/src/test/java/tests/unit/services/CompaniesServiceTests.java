@@ -1,4 +1,4 @@
-package tests.unit;
+package tests.unit.services;
 
 import autofixture.publicinterface.Any;
 import com.tghcastro.gullveig.companies.service.exceptions.CompanyNotFoundException;
