@@ -5,8 +5,10 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import tests.functional.ScenarioDataContext;
-import tests.functional.api.dtos.SectorRequest;
-import tests.functional.api.dtos.SectorResponse;
+import tests.functional.api.dtos.PostSectorRequest;
+import tests.functional.api.dtos.PostSectorResponse;
+import tests.functional.api.dtos.PutSectorRequest;
+import tests.functional.api.dtos.PutSectorResponse;
 import tests.functional.clients.CompaniesServiceOrchestrator;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -26,28 +28,54 @@ public class SectorsSteps {
 
     @Given("^an unregistered sector$")
     public void anUnregisteredSector() {
-        SectorRequest sectorRequest = SectorRequest.CreateWithValidData();
-        scenarioDataContext.put("sector", sectorRequest);
+        PostSectorRequest postSectorRequest = PostSectorRequest.CreateWithValidData();
+        scenarioDataContext.put("sector", postSectorRequest);
     }
 
     @When("^a client tries to register this sector$")
     public void aClientTriesToRegisterThisSector() {
-        SectorRequest sector = scenarioDataContext.get("sector");
-        SectorResponse response = companiesServiceOrchestrator.createSector(sector);
+        PostSectorRequest sector = scenarioDataContext.get("sector");
+        PostSectorResponse response = companiesServiceOrchestrator.createSector(sector);
         scenarioDataContext.put("createdSector", response);
     }
 
     @Then("^the sector is correctly created$")
     public void theSectorIsCorrectlyCreated() {
-        SectorRequest sector = scenarioDataContext.get("sector");
-        SectorResponse createdSector = scenarioDataContext.get("createdSector");
+        PostSectorRequest sector = scenarioDataContext.get("sector");
+        PostSectorResponse createdSector = scenarioDataContext.get("createdSector");
         assertThat(createdSector.getName(), is(sector.getName()));
         assertThat(createdSector.getId(), is(notNullValue()));
     }
 
     @And("^it is enabled to use$")
     public void itIsEnabledToUse() {
-        SectorResponse createdSector = scenarioDataContext.get("createdSector");
+        PostSectorResponse createdSector = scenarioDataContext.get("createdSector");
         assertTrue(createdSector.isEnabled());
+    }
+
+    @Given("an registered sector")
+    public void anRegisteredSector() {
+        PostSectorRequest postSectorRequest = PostSectorRequest.CreateWithValidData();
+        PostSectorResponse createdSector = companiesServiceOrchestrator.createSector(postSectorRequest);
+        assertThat(createdSector.getId(), is(notNullValue()));
+        scenarioDataContext.put("createdSector", createdSector);
+    }
+
+    @When("a client tries to update this sector data")
+    public void aClientTriesToUpdateThisSectorData() {
+        PostSectorResponse createdSector = scenarioDataContext.get("createdSector");
+        PutSectorRequest sectorToUpdate = PutSectorRequest.cloneFrom(createdSector);
+        sectorToUpdate.setName("NEW " + System.currentTimeMillis());
+        PutSectorResponse updatedSector = companiesServiceOrchestrator.updateSector(sectorToUpdate);
+        scenarioDataContext.put("sectorToUpdate", sectorToUpdate);
+        scenarioDataContext.put("updatedSector", updatedSector);
+    }
+
+    @Then("the sector is correctly updated")
+    public void theSectorIsCorrectlyUpdated() {
+        PutSectorRequest sectorToUpdate = scenarioDataContext.get("sectorToUpdate");
+        PutSectorResponse updatedSector = scenarioDataContext.get("updatedSector");
+        assertThat(updatedSector.getId(), is(sectorToUpdate.getId()));
+        assertThat(updatedSector.getName(), is(sectorToUpdate.getName()));
     }
 }

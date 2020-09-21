@@ -1,6 +1,6 @@
 package tests.functional.api.dtos;
 
-public class SectorResponse {
+public class PostSectorResponse {
     private String id;
     private String name;
     private boolean enabled;

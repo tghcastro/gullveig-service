@@ -1,17 +1,17 @@
 package tests.functional.api.dtos;
 
-public class SectorRequest {
+public class PostSectorRequest {
     private String name;
     private boolean enabled;
 
-    public SectorRequest(String name, boolean enabled) {
+    public PostSectorRequest(String name, boolean enabled) {
         this.name = name;
         this.enabled = enabled;
     }
 
-    public static SectorRequest CreateWithValidData() {
+    public static PostSectorRequest CreateWithValidData() {
         String someName = "SEC " + System.currentTimeMillis();
-        return new SectorRequest(someName, true);
+        return new PostSectorRequest(someName, true);
 
     }
 

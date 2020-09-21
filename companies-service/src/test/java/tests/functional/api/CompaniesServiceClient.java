@@ -1,32 +1,25 @@
 package tests.functional.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-import tests.functional.api.dtos.SectorRequest;
-import tests.functional.api.dtos.SectorResponse;
+import tests.functional.api.dtos.PostSectorRequest;
+import tests.functional.api.dtos.PostSectorResponse;
+import tests.functional.api.dtos.PutSectorRequest;
+import tests.functional.api.dtos.PutSectorResponse;
+import tests.functional.helpers.BaseClient;
 
 import java.io.UnsupportedEncodingException;
 
-public class CompaniesServiceClient {
-    private final CloseableHttpClient httpClient = HttpClients.createDefault();
-    private final ObjectMapper objectMapper;
+public class CompaniesServiceClient extends BaseClient {
 
-    public CompaniesServiceClient() {
-        objectMapper = new ObjectMapper();
-    }
-
-    public SectorResponse PostSector(SectorRequest sectorToCreate) {
-        HttpPost post = new HttpPost("http://localhost:8080/api/v1/sectors");
-        post.addHeader("Content-Type", "application/json");
+    public PostSectorResponse PostSector(PostSectorRequest sectorToCreate) {
+        HttpPost request = new HttpPost("http://localhost:8080/api/v1/sectors");
+        request.addHeader("Content-Type", "application/json");
         try {
-            post.setEntity(new StringEntity(objectMapper.writeValueAsString(sectorToCreate)));
-            return this.execute(post, SectorResponse.class);
+            request.setEntity(new StringEntity(objectMapper.writeValueAsString(sectorToCreate)));
+            return this.execute(request, PostSectorResponse.class);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (JsonProcessingException e) {
@@ -35,19 +28,16 @@ public class CompaniesServiceClient {
         return null;
     }
 
-    private <T> T execute(HttpPost request, Class<T> typeToReturn) {
-        System.out.println("Executing request");
-        System.out.println("URI: " + request.getURI());
-        System.out.println("Method: " + request.getMethod());
-        System.out.println("Response type: " + request.getMethod());
-
+    public PutSectorResponse PutSector(PutSectorRequest sectorToUpdate) {
+        HttpPut request = new HttpPut("http://localhost:8080/api/v1/sectors/" + sectorToUpdate.getId());
+        request.addHeader("Content-Type", "application/json");
         try {
-            CloseableHttpResponse response = httpClient.execute(request);
-            String stringResponse = EntityUtils.toString(response.getEntity());
-            System.out.println("Response body: " + stringResponse);
-            return objectMapper.readValue(stringResponse, typeToReturn);
-        } catch (Exception ex) {
-            System.out.println("Error when executing the Request");
+            request.setEntity(new StringEntity(objectMapper.writeValueAsString(sectorToUpdate)));
+            return this.execute(request, PutSectorResponse.class);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
         }
         return null;
     }
