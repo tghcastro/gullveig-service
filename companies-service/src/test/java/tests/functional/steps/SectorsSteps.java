@@ -5,15 +5,13 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import tests.functional.ScenarioDataContext;
-import tests.functional.api.dtos.PostSectorRequest;
-import tests.functional.api.dtos.PostSectorResponse;
-import tests.functional.api.dtos.PutSectorRequest;
-import tests.functional.api.dtos.PutSectorResponse;
+import tests.functional.api.contracts.*;
 import tests.functional.clients.CompaniesServiceOrchestrator;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class SectorsSteps {
@@ -77,5 +75,20 @@ public class SectorsSteps {
         PutSectorResponse updatedSector = scenarioDataContext.get("updatedSector");
         assertThat(updatedSector.getId(), is(sectorToUpdate.getId()));
         assertThat(updatedSector.getName(), is(sectorToUpdate.getName()));
+    }
+
+    @When("a client tries to delete this sector data")
+    public void aClientTriesToDeleteThisSectorData() {
+        PostSectorResponse createdSector = scenarioDataContext.get("createdSector");
+        companiesServiceOrchestrator.deleteSector(createdSector.getId());
+        scenarioDataContext.put("deletedSectorId", createdSector.getId());
+    }
+
+    @Then("the sector is correctly deleted")
+    public void theSectorIsCorrectlyDeleted() {
+        String sectorId = scenarioDataContext.get("deletedSectorId");
+        GetSectorResponse sector = companiesServiceOrchestrator.getSectorById(sectorId);
+        assertThat(sector.getId(), is(sectorId));
+        assertFalse(sector.isEnabled());
     }
 }

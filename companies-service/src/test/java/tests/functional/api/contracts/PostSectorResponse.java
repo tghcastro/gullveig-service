@@ -1,4 +1,4 @@
-package tests.functional.api.dtos;
+package tests.functional.api.contracts;
 
 public class PostSectorResponse {
     private String id;

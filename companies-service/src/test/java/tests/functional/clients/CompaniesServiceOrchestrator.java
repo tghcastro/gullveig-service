@@ -1,10 +1,7 @@
 package tests.functional.clients;
 
 import tests.functional.api.CompaniesServiceClient;
-import tests.functional.api.dtos.PostSectorRequest;
-import tests.functional.api.dtos.PostSectorResponse;
-import tests.functional.api.dtos.PutSectorRequest;
-import tests.functional.api.dtos.PutSectorResponse;
+import tests.functional.api.contracts.*;
 
 public class CompaniesServiceOrchestrator {
 
@@ -20,7 +17,17 @@ public class CompaniesServiceOrchestrator {
     }
 
     public PutSectorResponse updateSector(PutSectorRequest sectorToUpdate) {
-        System.out.println("Updating a sector");
+        System.out.println("Updating a sector. Id: " + sectorToUpdate.getId());
         return this.companiesServiceClient.PutSector(sectorToUpdate);
+    }
+
+    public void deleteSector(String id) {
+        System.out.println("Deleting sector. Id: " + id);
+        this.companiesServiceClient.DeleteSector(id);
+    }
+
+    public GetSectorResponse getSectorById(String id) {
+        System.out.println("Getting sector by ID. Id: " + id);
+        return this.companiesServiceClient.GetSector(id);
     }
 }

@@ -1,6 +1,6 @@
-package tests.functional.api.dtos;
+package tests.functional.api.contracts;
 
-public class PutSectorResponse {
+public class GetSectorResponse {
     private String id;
     private String name;
     private boolean enabled;

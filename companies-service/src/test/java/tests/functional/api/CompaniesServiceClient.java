@@ -1,17 +1,14 @@
 package tests.functional.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
-import tests.functional.api.dtos.PostSectorRequest;
-import tests.functional.api.dtos.PostSectorResponse;
-import tests.functional.api.dtos.PutSectorRequest;
-import tests.functional.api.dtos.PutSectorResponse;
+import tests.functional.api.contracts.*;
 import tests.functional.helpers.BaseClient;
 
-import java.io.UnsupportedEncodingException;
-
+//TODO: Add configuration for URI
 public class CompaniesServiceClient extends BaseClient {
 
     public PostSectorResponse PostSector(PostSectorRequest sectorToCreate) {
@@ -20,9 +17,7 @@ public class CompaniesServiceClient extends BaseClient {
         try {
             request.setEntity(new StringEntity(objectMapper.writeValueAsString(sectorToCreate)));
             return this.execute(request, PostSectorResponse.class);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -34,9 +29,23 @@ public class CompaniesServiceClient extends BaseClient {
         try {
             request.setEntity(new StringEntity(objectMapper.writeValueAsString(sectorToUpdate)));
             return this.execute(request, PutSectorResponse.class);
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (JsonProcessingException e) {
+        }
+        return null;
+    }
+
+    public void DeleteSector(String id) {
+        HttpDelete request = new HttpDelete("http://localhost:8080/api/v1/sectors/" + id);
+        this.execute(request);
+    }
+
+    public GetSectorResponse GetSector(String id) {
+        HttpGet request = new HttpGet("http://localhost:8080/api/v1/sectors/" + id);
+        request.addHeader("Accept", "application/json");
+        try {
+            return this.execute(request, GetSectorResponse.class);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;

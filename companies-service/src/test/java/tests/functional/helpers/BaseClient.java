@@ -23,12 +23,20 @@ public class BaseClient {
 
         try {
             CloseableHttpResponse response = httpClient.execute(request);
-            String stringResponse = EntityUtils.toString(response.getEntity());
-            System.out.println("Response body: " + stringResponse);
-            return objectMapper.readValue(stringResponse, typeToReturn);
+            if (response.getEntity() != null) {
+                String stringResponse = EntityUtils.toString(response.getEntity());
+                System.out.println("Response body: " + stringResponse);
+                return objectMapper.readValue(stringResponse, typeToReturn);
+            }
+            return (T) response;
         } catch (Exception ex) {
-            System.out.println("Error when executing the Request");
+            System.out.println("Error when executing the Request. " + ex.getMessage());
+            // TODO: Create scenario error handling
         }
         return null;
+    }
+
+    protected CloseableHttpResponse execute(HttpUriRequest request) {
+        return this.execute(request, CloseableHttpResponse.class);
     }
 }
