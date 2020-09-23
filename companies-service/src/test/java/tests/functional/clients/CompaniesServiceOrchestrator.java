@@ -30,4 +30,30 @@ public class CompaniesServiceOrchestrator {
         System.out.println("Getting sector by ID. Id: " + id);
         return this.companiesServiceClient.GetSector(id);
     }
+
+    public PostCompanyResponse createCompany(PostCompanyRequest companyToCreate) {
+        System.out.println("Creating a new company");
+        return this.companiesServiceClient.PostCompany(companyToCreate);
+    }
+
+
+    public PostCompanyRequest GetCompanyInstanceWithValidData(String sectorId) {
+        String someName = "COM " + System.currentTimeMillis();
+        PostCompanyRequest company = new PostCompanyRequest();
+        company.setName(someName);
+        company.setEnabled(true);
+        company.setSector(sectorId);
+        return company;
+    }
+
+    public PostSectorRequest GetSectorInstanceWithValidData() {
+        String someName = "SEC " + System.currentTimeMillis();
+        return new PostSectorRequest(someName, true);
+    }
+
+    public PostSectorResponse createValidSector() {
+        return this.createSector(this.GetSectorInstanceWithValidData());
+    }
+
+
 }

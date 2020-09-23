@@ -16,8 +16,8 @@ import static org.junit.Assert.assertTrue;
 
 public class SectorsSteps {
 
-    private ScenarioDataContext scenarioDataContext;
-    private CompaniesServiceOrchestrator companiesServiceOrchestrator;
+    private final ScenarioDataContext scenarioDataContext;
+    private final CompaniesServiceOrchestrator companiesServiceOrchestrator;
 
     public SectorsSteps(ScenarioDataContext scenarioDataContext, CompaniesServiceOrchestrator companiesServiceOrchestrator) {
         this.scenarioDataContext = scenarioDataContext;
@@ -26,7 +26,7 @@ public class SectorsSteps {
 
     @Given("^an unregistered sector$")
     public void anUnregisteredSector() {
-        PostSectorRequest postSectorRequest = PostSectorRequest.CreateWithValidData();
+        PostSectorRequest postSectorRequest = companiesServiceOrchestrator.GetSectorInstanceWithValidData();
         scenarioDataContext.put("sector", postSectorRequest);
     }
 
@@ -53,7 +53,7 @@ public class SectorsSteps {
 
     @Given("an registered sector")
     public void anRegisteredSector() {
-        PostSectorRequest postSectorRequest = PostSectorRequest.CreateWithValidData();
+        PostSectorRequest postSectorRequest = companiesServiceOrchestrator.GetSectorInstanceWithValidData();
         PostSectorResponse createdSector = companiesServiceOrchestrator.createSector(postSectorRequest);
         assertThat(createdSector.getId(), is(notNullValue()));
         scenarioDataContext.put("createdSector", createdSector);

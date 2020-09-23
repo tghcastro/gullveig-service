@@ -50,4 +50,16 @@ public class CompaniesServiceClient extends BaseClient {
         }
         return null;
     }
+
+    public PostCompanyResponse PostCompany(PostCompanyRequest companyToCreate) {
+        HttpPost request = new HttpPost("http://localhost:8080/api/v1/companies");
+        request.addHeader("Content-Type", "application/json");
+        try {
+            request.setEntity(new StringEntity(objectMapper.writeValueAsString(companyToCreate)));
+            return this.execute(request, PostCompanyResponse.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

@@ -9,12 +9,6 @@ public class PostSectorRequest {
         this.enabled = enabled;
     }
 
-    public static PostSectorRequest CreateWithValidData() {
-        String someName = "SEC " + System.currentTimeMillis();
-        return new PostSectorRequest(someName, true);
-
-    }
-
     public String getName() {
         return name;
     }

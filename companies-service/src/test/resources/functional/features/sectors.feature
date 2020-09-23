@@ -11,7 +11,7 @@ Feature: Companies Sectors
     When a client tries to update this sector data
     Then the sector is correctly updated
 
-  Scenario: Update an existent sector successfully
+  Scenario: Delete an existent sector successfully
     Given an registered sector
     When a client tries to delete this sector data
     Then the sector is correctly deleted
