@@ -1,13 +1,13 @@
-package tests.functional.clients;
+package tests.functional;
 
 import tests.functional.api.CompaniesServiceClient;
 import tests.functional.api.contracts.*;
 
-public class CompaniesServiceOrchestrator {
+public class CompaniesServiceAdministrator {
 
     private final CompaniesServiceClient companiesServiceClient;
 
-    public CompaniesServiceOrchestrator(CompaniesServiceClient companiesServiceClient) {
+    public CompaniesServiceAdministrator(CompaniesServiceClient companiesServiceClient) {
         this.companiesServiceClient = companiesServiceClient;
     }
 

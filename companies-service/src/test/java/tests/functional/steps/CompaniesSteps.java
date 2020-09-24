@@ -4,12 +4,12 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import tests.functional.CompaniesServiceAdministrator;
 import tests.functional.ScenarioDataContext;
 import tests.functional.api.contracts.PostCompanyRequest;
 import tests.functional.api.contracts.PostCompanyResponse;
 import tests.functional.api.contracts.PostSectorResponse;
 import tests.functional.api.contracts.PutCompanyResponse;
-import tests.functional.clients.CompaniesServiceOrchestrator;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -17,32 +17,32 @@ import static org.hamcrest.Matchers.notNullValue;
 
 public class CompaniesSteps {
     private final ScenarioDataContext scenarioDataContext;
-    private final CompaniesServiceOrchestrator companiesServiceOrchestrator;
+    private final CompaniesServiceAdministrator companiesServiceAdministrator;
 
-    public CompaniesSteps(ScenarioDataContext scenarioDataContext, CompaniesServiceOrchestrator companiesServiceOrchestrator) {
+    public CompaniesSteps(ScenarioDataContext scenarioDataContext, CompaniesServiceAdministrator companiesServiceAdministrator) {
         this.scenarioDataContext = scenarioDataContext;
-        this.companiesServiceOrchestrator = companiesServiceOrchestrator;
+        this.companiesServiceAdministrator = companiesServiceAdministrator;
     }
 
-    @Given("an existent company associated to any sector")
-    public void anExistentCompanyAssociatedToAnySector() {
-        PostSectorResponse createdSector = companiesServiceOrchestrator.createValidSector();
+    @Given("an existent company associated with any sector")
+    public void anExistentCompanyAssociatedWithAnySector() {
+        PostSectorResponse createdSector = companiesServiceAdministrator.createValidSector();
         scenarioDataContext.put("createdSector", createdSector);
-        PostCompanyResponse postCompanyResponse = companiesServiceOrchestrator.createValidCompany(createdSector.getId());
+        PostCompanyResponse postCompanyResponse = companiesServiceAdministrator.createValidCompany(createdSector.getId());
         scenarioDataContext.put("createdCompany", postCompanyResponse);
     }
 
     @And("an unregistered company from this sector")
     public void anUnregisteredCompany() {
         PostSectorResponse createdSector = scenarioDataContext.get("createdSector");
-        PostCompanyRequest postCompanyRequest = companiesServiceOrchestrator.GetCompanyInstanceWithValidData(createdSector.getId());
+        PostCompanyRequest postCompanyRequest = companiesServiceAdministrator.GetCompanyInstanceWithValidData(createdSector.getId());
         scenarioDataContext.put("companyToCreate", postCompanyRequest);
     }
 
     @When("a client tries to register this company")
     public void aClientTriesToRegisterThisCompany() {
         PostCompanyRequest companyToCreate = scenarioDataContext.get("companyToCreate");
-        PostCompanyResponse response = companiesServiceOrchestrator.createCompany(companyToCreate);
+        PostCompanyResponse response = companiesServiceAdministrator.createCompany(companyToCreate);
         scenarioDataContext.put("createdCompany", response);
 
     }
@@ -60,7 +60,7 @@ public class CompaniesSteps {
     public void aClientTriesToUpdateThisCompanyName() {
         PostCompanyResponse companyToUpdate = scenarioDataContext.get("createdCompany");
         companyToUpdate.setName("NEW " + System.currentTimeMillis());
-        PutCompanyResponse updatedCompany = companiesServiceOrchestrator.updateCompany(companyToUpdate);
+        PutCompanyResponse updatedCompany = companiesServiceAdministrator.updateCompany(companyToUpdate);
         scenarioDataContext.put("updatedCompany", updatedCompany);
     }
 
@@ -75,7 +75,7 @@ public class CompaniesSteps {
         PostCompanyResponse.CompanySector sector = new PostCompanyResponse.CompanySector();
         sector.setId(anotherCreatedSector.getId());
         companyToUpdate.setSector(sector);
-        PutCompanyResponse updatedCompany = companiesServiceOrchestrator.updateCompany(companyToUpdate);
+        PutCompanyResponse updatedCompany = companiesServiceAdministrator.updateCompany(companyToUpdate);
         scenarioDataContext.put("updatedCompany", updatedCompany);
     }
 }

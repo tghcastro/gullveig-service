@@ -6,7 +6,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import tests.functional.api.contracts.*;
-import tests.functional.helpers.BaseClient;
 
 //TODO: Add configuration for URI
 public class CompaniesServiceClient extends BaseClient {

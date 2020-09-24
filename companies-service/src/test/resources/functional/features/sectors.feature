@@ -1,22 +1,30 @@
-Feature: Companies Sectors
+Feature: Sector registration
+  As a Broker admin,
+  I want manage company's sector,
+  so that my clients could manage his portfolios by sectors
 
-  Scenario: Create a new sector successfully
+  Scenario: Successful sector creation
     Given an unregistered sector
     When a client tries to register this sector
     Then the sector is correctly created
     And it is enabled to use
 
-  Scenario: Update an existent sector successfully
-    Given an registered sector
+  Scenario: Successful sector data editing
+    Given a registered sector
     When a client tries to update this sector data
     Then the sector is correctly updated
 
-  Scenario: Delete an existent sector successfully
-    Given an registered sector
+  Scenario: Successful sector deleting
+    Given a registered sector
     When a client tries to delete this sector
     Then this sector was deleted
 
-  Scenario: Does not delete sector associated with a company
-    Given an existent company associated to any sector
+  Scenario: Unable to delete a sector associated with a company
+    Given an existent company associated with any sector
     When a client tries to delete this sector
     Then this sector was not deleted
+
+  Scenario: Unable to create a sector if its name already exists
+    Given a registered sector
+    When a client tries to register this sector again
+    Then this sector was not created

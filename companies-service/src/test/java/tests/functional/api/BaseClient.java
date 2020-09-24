@@ -1,4 +1,4 @@
-package tests.functional.helpers;
+package tests.functional.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.client.methods.CloseableHttpResponse;
