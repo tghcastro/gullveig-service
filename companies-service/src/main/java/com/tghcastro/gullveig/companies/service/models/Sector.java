@@ -16,7 +16,7 @@ import java.util.Objects;
 public class Sector {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     @Size(min = 5, max = 30, message = "Name should have between 5 and 30 characters")
     @NotEmpty(message = "Name is mandatory")
@@ -35,11 +35,11 @@ public class Sector {
     }
 
     public Long getId() {
-        return Id;
+        return id;
     }
 
     public void setId(Long id) {
-        Id = id;
+        this.id = id;
     }
 
     public String getName() {
@@ -64,12 +64,12 @@ public class Sector {
         if (o == null || getClass() != o.getClass()) return false;
         Sector sector = (Sector) o;
         return enabled == sector.enabled &&
-                Objects.equals(Id, sector.Id) &&
+                Objects.equals(id, sector.id) &&
                 Objects.equals(name, sector.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(Id, name, enabled);
+        return Objects.hash(id, name, enabled);
     }
 }

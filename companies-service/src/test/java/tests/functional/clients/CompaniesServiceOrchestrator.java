@@ -36,6 +36,11 @@ public class CompaniesServiceOrchestrator {
         return this.companiesServiceClient.PostCompany(companyToCreate);
     }
 
+    public PutCompanyResponse updateCompany(PostCompanyResponse companyToUpdate) {
+        System.out.println("Updating a company. Id: " + companyToUpdate.getId());
+        return this.companiesServiceClient.PutCompany(companyToUpdate);
+    }
+
 
     public PostCompanyRequest GetCompanyInstanceWithValidData(String sectorId) {
         String someName = "COM " + System.currentTimeMillis();
@@ -55,5 +60,7 @@ public class CompaniesServiceOrchestrator {
         return this.createSector(this.GetSectorInstanceWithValidData());
     }
 
-
+    public PostCompanyResponse createValidCompany(String sectorId) {
+        return this.createCompany(this.GetCompanyInstanceWithValidData(sectorId));
+    }
 }

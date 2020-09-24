@@ -17,15 +17,15 @@ public class BaseClient {
 
     protected <T> T execute(HttpUriRequest request, Class<T> typeToReturn) {
         System.out.println("Executing request");
-        System.out.println("URI: " + request.getURI());
-        System.out.println("Method: " + request.getMethod());
-        System.out.println("Response type: " + request.getMethod());
+        System.out.println("- URI: " + request.getURI());
+        System.out.println("- Method: " + request.getMethod());
+        System.out.println("- Response type: " + typeToReturn.toString());
 
         try {
             CloseableHttpResponse response = httpClient.execute(request);
             if (response.getEntity() != null) {
                 String stringResponse = EntityUtils.toString(response.getEntity());
-                System.out.println("Response body: " + stringResponse);
+                System.out.println("- Response body: " + stringResponse);
                 return objectMapper.readValue(stringResponse, typeToReturn);
             }
             return (T) response;

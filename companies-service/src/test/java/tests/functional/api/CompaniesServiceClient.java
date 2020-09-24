@@ -62,4 +62,16 @@ public class CompaniesServiceClient extends BaseClient {
         }
         return null;
     }
+
+    public PutCompanyResponse PutCompany(PostCompanyResponse companyToUpdate) {
+        HttpPut request = new HttpPut("http://localhost:8080/api/v1/companies/" + companyToUpdate.getId());
+        request.addHeader("Content-Type", "application/json");
+        try {
+            request.setEntity(new StringEntity(objectMapper.writeValueAsString(companyToUpdate)));
+            return this.execute(request, PutCompanyResponse.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

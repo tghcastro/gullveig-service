@@ -33,6 +33,11 @@ public class CompaniesServiceImpl implements CompaniesService {
     }
 
     @Override
+    public Optional<Company> getBySectorId(Long sectorId) {
+        return this.companiesRepository.findBySectorId(sectorId);
+    }
+
+    @Override
     public Company create(Company companyToCreate) {
         return this.companiesRepository.saveAndFlush(companyToCreate);
     }

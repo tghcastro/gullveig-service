@@ -10,6 +10,8 @@ public interface CompaniesService {
 
     Optional<Company> getById(Long id);
 
+    Optional<Company> getBySectorId(Long id);
+
     Company create(Company companyToCreate);
 
     Company update(Long id, Company companyToUpdate);

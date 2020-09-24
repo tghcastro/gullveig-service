@@ -8,6 +8,7 @@ import tests.functional.ScenarioDataContext;
 import tests.functional.api.contracts.PostCompanyRequest;
 import tests.functional.api.contracts.PostCompanyResponse;
 import tests.functional.api.contracts.PostSectorResponse;
+import tests.functional.api.contracts.PutCompanyResponse;
 import tests.functional.clients.CompaniesServiceOrchestrator;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -23,10 +24,12 @@ public class CompaniesSteps {
         this.companiesServiceOrchestrator = companiesServiceOrchestrator;
     }
 
-    @Given("an existent sector")
-    public void anExistentSector() {
-        PostSectorResponse sector = companiesServiceOrchestrator.createValidSector();
-        scenarioDataContext.put("createdSector", sector);
+    @Given("an existent company associated to any sector")
+    public void anExistentCompanyAssociatedToAnySector() {
+        PostSectorResponse createdSector = companiesServiceOrchestrator.createValidSector();
+        scenarioDataContext.put("createdSector", createdSector);
+        PostCompanyResponse postCompanyResponse = companiesServiceOrchestrator.createValidCompany(createdSector.getId());
+        scenarioDataContext.put("createdCompany", postCompanyResponse);
     }
 
     @And("an unregistered company from this sector")
@@ -51,5 +54,28 @@ public class CompaniesSteps {
         assertThat(createdCompany.getName(), is(companyToCreate.getName()));
         assertThat(createdCompany.getSector().getId(), is(companyToCreate.getSector().getId()));
         assertThat(createdCompany.getId(), is(notNullValue()));
+    }
+
+    @When("a client tries to update this company name")
+    public void aClientTriesToUpdateThisCompanyName() {
+        PostCompanyResponse companyToUpdate = scenarioDataContext.get("createdCompany");
+        companyToUpdate.setName("NEW " + System.currentTimeMillis());
+        PutCompanyResponse updatedCompany = companiesServiceOrchestrator.updateCompany(companyToUpdate);
+        scenarioDataContext.put("updatedCompany", updatedCompany);
+    }
+
+    @Then("the company correctly updated")
+    public void theCompanyCorrectlyUpdated() {
+    }
+
+    @When("a client tries to update this company to this another sector")
+    public void aClientTriesToUpdateThisCompanyToThisAnotherSector() {
+        PostCompanyResponse companyToUpdate = scenarioDataContext.get("createdCompany");
+        PostSectorResponse anotherCreatedSector = scenarioDataContext.get("anotherCreatedSector");
+        PostCompanyResponse.CompanySector sector = new PostCompanyResponse.CompanySector();
+        sector.setId(anotherCreatedSector.getId());
+        companyToUpdate.setSector(sector);
+        PutCompanyResponse updatedCompany = companiesServiceOrchestrator.updateCompany(companyToUpdate);
+        scenarioDataContext.put("updatedCompany", updatedCompany);
     }
 }

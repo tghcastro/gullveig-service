@@ -1,6 +1,7 @@
 package com.tghcastro.gullveig.companies.service.services;
 
 import com.tghcastro.gullveig.companies.service.exceptions.SectorAlreadyExistentException;
+import com.tghcastro.gullveig.companies.service.exceptions.SectorInUseException;
 import com.tghcastro.gullveig.companies.service.exceptions.SectorNotFoundException;
 import com.tghcastro.gullveig.companies.service.models.Sector;
 import com.tghcastro.gullveig.companies.service.repositories.SectorsRepository;
@@ -15,13 +16,15 @@ import java.util.List;
 public class SectorsServiceImpl implements SectorsService {
 
     private final SectorsRepository sectorsRepository;
+    private final CompaniesService companiesService;
     private final Counter sectorsCreatedCounter;
     private final Counter sectorsUpdatedCounter;
     private final MeterRegistry meterRegistry;
     private final Counter sectorsDeletedCounter;
 
-    public SectorsServiceImpl(SectorsRepository sectorsRepository, MeterRegistry meterRegistry) {
+    public SectorsServiceImpl(SectorsRepository sectorsRepository, CompaniesService companiesService, MeterRegistry meterRegistry) {
         this.sectorsRepository = sectorsRepository;
+        this.companiesService = companiesService;
         this.meterRegistry = meterRegistry;
         sectorsCreatedCounter = this.meterRegistry.counter("sectors.created");
         sectorsUpdatedCounter = this.meterRegistry.counter("sectors.updated");
@@ -59,8 +62,14 @@ public class SectorsServiceImpl implements SectorsService {
     @Override
     public void delete(Long id) {
         Sector sectorToDelete = this.getById(id);
+
+        this.companiesService.getBySectorId(id)
+                .ifPresent(foundCompany -> {
+                    throw new SectorInUseException(foundCompany, sectorToDelete);
+                });
+
         sectorToDelete.setEnabled(false);
-        Sector deletedSector = sectorsRepository.saveAndFlush(sectorToDelete);
+        Sector deletedSector = this.update(id, sectorToDelete);
         if (deletedSector != null) {
             sectorsDeletedCounter.increment();
         }

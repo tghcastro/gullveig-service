@@ -5,6 +5,7 @@ import com.tghcastro.gullveig.companies.service.exceptions.SectorAlreadyExistent
 import com.tghcastro.gullveig.companies.service.exceptions.SectorNotFoundException;
 import com.tghcastro.gullveig.companies.service.models.Sector;
 import com.tghcastro.gullveig.companies.service.repositories.SectorsRepository;
+import com.tghcastro.gullveig.companies.service.services.CompaniesServiceImpl;
 import com.tghcastro.gullveig.companies.service.services.SectorsServiceImpl;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -23,6 +24,7 @@ import static org.mockito.Mockito.*;
 
 public class SectorsServiceTests {
 
+    private CompaniesServiceImpl companiesService;
     private SectorsServiceImpl sectorsService;
     private SectorsRepository sectorsRepository;
     private MeterRegistry meterRegistry;
@@ -33,7 +35,7 @@ public class SectorsServiceTests {
         meterRegistry = Mockito.mock(MeterRegistry.class);
         Counter someCounter = Mockito.mock(Counter.class);
         when(meterRegistry.counter(anyString())).thenReturn(someCounter);
-        sectorsService = new SectorsServiceImpl(sectorsRepository, meterRegistry);
+        sectorsService = new SectorsServiceImpl(sectorsRepository, companiesService, meterRegistry);
     }
 
     @Test
@@ -88,7 +90,7 @@ public class SectorsServiceTests {
     }
 
     @Test
-    public void test_create_shouldNotAllowSectorsWithSameName(){
+    public void test_create_shouldNotAllowSectorsWithSameName() {
         String sameName = "mysector";
 
         Sector sectorAlreadyExistent = Any.of(Sector.class);
@@ -105,7 +107,7 @@ public class SectorsServiceTests {
     @Test
     public void test_update_shouldReturnUpdatedSector() {
         Sector originalSector = new Sector("SomeSector");
-        originalSector.setId((long)1);
+        originalSector.setId((long) 1);
         originalSector.setEnabled(true);
 
         Sector sectorToUpdate = new Sector("SomeSector");
@@ -132,7 +134,7 @@ public class SectorsServiceTests {
     @Test
     public void test_delete_shouldUpdateEnableToFalse_whenDeletingSector() {
         Sector originalSector = new Sector("SomeSector");
-        originalSector.setId((long)1);
+        originalSector.setId((long) 1);
         originalSector.setEnabled(true);
 
         Sector deletedSector = new Sector();

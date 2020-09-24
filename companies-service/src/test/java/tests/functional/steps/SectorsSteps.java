@@ -24,6 +24,18 @@ public class SectorsSteps {
         this.companiesServiceOrchestrator = companiesServiceOrchestrator;
     }
 
+    @Given("an existent sector")
+    public void anExistentSector() {
+        PostSectorResponse sector = companiesServiceOrchestrator.createValidSector();
+        scenarioDataContext.put("createdSector", sector);
+    }
+
+    @And("another existent sector")
+    public void anotherExistentSector() {
+        PostSectorResponse sector = companiesServiceOrchestrator.createValidSector();
+        scenarioDataContext.put("anotherCreatedSector", sector);
+    }
+
     @Given("^an unregistered sector$")
     public void anUnregisteredSector() {
         PostSectorRequest postSectorRequest = companiesServiceOrchestrator.GetSectorInstanceWithValidData();
@@ -77,18 +89,22 @@ public class SectorsSteps {
         assertThat(updatedSector.getName(), is(sectorToUpdate.getName()));
     }
 
-    @When("a client tries to delete this sector data")
-    public void aClientTriesToDeleteThisSectorData() {
+    @When("a client tries to delete this sector")
+    public void aClientTriesToDeleteThisSector() {
         PostSectorResponse createdSector = scenarioDataContext.get("createdSector");
         companiesServiceOrchestrator.deleteSector(createdSector.getId());
         scenarioDataContext.put("deletedSectorId", createdSector.getId());
     }
 
-    @Then("the sector is correctly deleted")
-    public void theSectorIsCorrectlyDeleted() {
+    @Then("^this sector (.*?) deleted")
+    public void thisSectorIsDeleted(String what) {
         String sectorId = scenarioDataContext.get("deletedSectorId");
         GetSectorResponse sector = companiesServiceOrchestrator.getSectorById(sectorId);
         assertThat(sector.getId(), is(sectorId));
-        assertFalse(sector.isEnabled());
+        if (what.equals("was not")) {
+            assertTrue(sector.isEnabled());
+        } else {
+            assertFalse(sector.isEnabled());
+        }
     }
 }
