@@ -3,12 +3,11 @@ package com.tghcastro.gullveig.companies.service.domain.services;
 import com.tghcastro.gullveig.companies.service.domain.exceptions.SectorAlreadyExistentException;
 import com.tghcastro.gullveig.companies.service.domain.exceptions.SectorInUseException;
 import com.tghcastro.gullveig.companies.service.domain.exceptions.SectorNotFoundException;
+import com.tghcastro.gullveig.companies.service.domain.interfaces.metrics.MetricsService;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.repositories.SectorsRepository;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.services.CompaniesService;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.services.SectorsService;
 import com.tghcastro.gullveig.companies.service.domain.models.Sector;
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -19,20 +18,12 @@ public class SectorsDomainService implements SectorsService {
 
     private final SectorsRepository sectorsRepository;
     private final CompaniesService companiesService;
-    private final Counter sectorsCreatedCounter;
-    private final Counter sectorsUpdatedCounter;
-    private final MeterRegistry meterRegistry;
-    private final Counter sectorsDeletedCounter;
+    private final MetricsService metricsService;
 
-    public SectorsDomainService(SectorsRepository sectorsRepository, CompaniesService companiesService, MeterRegistry meterRegistry) {
+    public SectorsDomainService(SectorsRepository sectorsRepository, CompaniesService companiesService, MetricsService metricsService) {
         this.sectorsRepository = sectorsRepository;
         this.companiesService = companiesService;
-        this.meterRegistry = meterRegistry;
-
-        //TODO: Better place to put this (metrics initializer)
-        sectorsCreatedCounter = this.meterRegistry.counter("sectors.created");
-        sectorsUpdatedCounter = this.meterRegistry.counter("sectors.updated");
-        sectorsDeletedCounter = this.meterRegistry.counter("sectors.deleted");
+        this.metricsService = metricsService;
     }
 
     @Override
@@ -58,7 +49,7 @@ public class SectorsDomainService implements SectorsService {
 
         Sector createdSector = sectorsRepository.saveAndFlush(sector);
         if (createdSector != null) {
-            sectorsCreatedCounter.increment();
+            this.metricsService.registerSectorCreated();
         }
         return createdSector;
     }
@@ -75,7 +66,7 @@ public class SectorsDomainService implements SectorsService {
         sectorToDelete.setEnabled(false);
         Sector deletedSector = this.update(id, sectorToDelete);
         if (deletedSector != null) {
-            sectorsDeletedCounter.increment();
+            this.metricsService.registerSectorDeleted();
         }
     }
 
@@ -85,7 +76,7 @@ public class SectorsDomainService implements SectorsService {
         BeanUtils.copyProperties(sector, existentSector, "id");
         Sector updatedSector = sectorsRepository.saveAndFlush(existentSector);
         if (updatedSector != null) {
-            sectorsUpdatedCounter.increment();
+            this.metricsService.registerSectorUpdated();
         }
         return updatedSector;
     }

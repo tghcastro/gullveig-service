@@ -1,6 +1,7 @@
 package com.tghcastro.gullveig.companies.service.domain.services;
 
 import com.tghcastro.gullveig.companies.service.domain.exceptions.CompanyNotFoundException;
+import com.tghcastro.gullveig.companies.service.domain.interfaces.metrics.MetricsService;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.repositories.CompaniesRepository;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.services.CompaniesService;
 import com.tghcastro.gullveig.companies.service.domain.models.Company;
@@ -14,8 +15,10 @@ import java.util.Optional;
 public class CompaniesDomainService implements CompaniesService {
 
     private final CompaniesRepository companiesRepository;
+    private final MetricsService metricsService;
 
-    public CompaniesDomainService(CompaniesRepository companiesRepository) {
+    public CompaniesDomainService(CompaniesRepository companiesRepository, MetricsService metricsService) {
+        this.metricsService = metricsService;
         this.companiesRepository = companiesRepository;
     }
 
@@ -40,20 +43,31 @@ public class CompaniesDomainService implements CompaniesService {
 
     @Override
     public Company create(Company companyToCreate) {
-        return this.companiesRepository.saveAndFlush(companyToCreate);
+        Company createdCompany = this.companiesRepository.saveAndFlush(companyToCreate);
+        if (createdCompany != null) {
+            this.metricsService.registerCompanyCreated();
+        }
+        return createdCompany;
     }
 
     @Override
     public Company update(Long id, Company companyToUpdate) {
         Company existentCompany = this.getById(id).get();
         BeanUtils.copyProperties(companyToUpdate, existentCompany, "id");
-        return this.companiesRepository.saveAndFlush(existentCompany);
+        Company updatedCompany = this.companiesRepository.saveAndFlush(existentCompany);
+        if (updatedCompany != null) {
+            this.metricsService.registerCompanyUpdated();
+        }
+        return updatedCompany;
     }
 
     @Override
     public void delete(Long id) {
         Company companyToDelete = this.getById(id).get();
         companyToDelete.setEnabled(false);
-        this.companiesRepository.saveAndFlush(companyToDelete);
+        Company deletedCompany = this.companiesRepository.saveAndFlush(companyToDelete);
+        if (deletedCompany != null) {
+            this.metricsService.registerCompanyUpdated();
+        }
     }
 }
