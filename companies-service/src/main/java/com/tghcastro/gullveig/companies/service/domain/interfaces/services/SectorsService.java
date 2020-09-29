@@ -1,6 +1,6 @@
-package com.tghcastro.gullveig.companies.service.services;
+package com.tghcastro.gullveig.companies.service.domain.interfaces.services;
 
-import com.tghcastro.gullveig.companies.service.models.Sector;
+import com.tghcastro.gullveig.companies.service.domain.models.Sector;
 
 import java.util.List;
 

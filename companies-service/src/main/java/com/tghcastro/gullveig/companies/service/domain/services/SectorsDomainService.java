@@ -1,10 +1,12 @@
-package com.tghcastro.gullveig.companies.service.services;
+package com.tghcastro.gullveig.companies.service.domain.services;
 
-import com.tghcastro.gullveig.companies.service.exceptions.SectorAlreadyExistentException;
-import com.tghcastro.gullveig.companies.service.exceptions.SectorInUseException;
-import com.tghcastro.gullveig.companies.service.exceptions.SectorNotFoundException;
-import com.tghcastro.gullveig.companies.service.models.Sector;
-import com.tghcastro.gullveig.companies.service.repositories.SectorsRepository;
+import com.tghcastro.gullveig.companies.service.domain.exceptions.SectorAlreadyExistentException;
+import com.tghcastro.gullveig.companies.service.domain.exceptions.SectorInUseException;
+import com.tghcastro.gullveig.companies.service.domain.exceptions.SectorNotFoundException;
+import com.tghcastro.gullveig.companies.service.domain.interfaces.repositories.SectorsRepository;
+import com.tghcastro.gullveig.companies.service.domain.interfaces.services.CompaniesService;
+import com.tghcastro.gullveig.companies.service.domain.interfaces.services.SectorsService;
+import com.tghcastro.gullveig.companies.service.domain.models.Sector;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.BeanUtils;
@@ -13,7 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class SectorsServiceImpl implements SectorsService {
+public class SectorsDomainService implements SectorsService {
 
     private final SectorsRepository sectorsRepository;
     private final CompaniesService companiesService;
@@ -22,10 +24,12 @@ public class SectorsServiceImpl implements SectorsService {
     private final MeterRegistry meterRegistry;
     private final Counter sectorsDeletedCounter;
 
-    public SectorsServiceImpl(SectorsRepository sectorsRepository, CompaniesService companiesService, MeterRegistry meterRegistry) {
+    public SectorsDomainService(SectorsRepository sectorsRepository, CompaniesService companiesService, MeterRegistry meterRegistry) {
         this.sectorsRepository = sectorsRepository;
         this.companiesService = companiesService;
         this.meterRegistry = meterRegistry;
+
+        //TODO: Better place to put this (metrics initializer)
         sectorsCreatedCounter = this.meterRegistry.counter("sectors.created");
         sectorsUpdatedCounter = this.meterRegistry.counter("sectors.updated");
         sectorsDeletedCounter = this.meterRegistry.counter("sectors.deleted");

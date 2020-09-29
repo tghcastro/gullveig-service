@@ -1,8 +1,9 @@
-package com.tghcastro.gullveig.companies.service.services;
+package com.tghcastro.gullveig.companies.service.domain.services;
 
-import com.tghcastro.gullveig.companies.service.exceptions.CompanyNotFoundException;
-import com.tghcastro.gullveig.companies.service.models.Company;
-import com.tghcastro.gullveig.companies.service.repositories.CompaniesRepository;
+import com.tghcastro.gullveig.companies.service.domain.exceptions.CompanyNotFoundException;
+import com.tghcastro.gullveig.companies.service.domain.interfaces.repositories.CompaniesRepository;
+import com.tghcastro.gullveig.companies.service.domain.interfaces.services.CompaniesService;
+import com.tghcastro.gullveig.companies.service.domain.models.Company;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -10,11 +11,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CompaniesServiceImpl implements CompaniesService {
+public class CompaniesDomainService implements CompaniesService {
 
     private final CompaniesRepository companiesRepository;
 
-    public CompaniesServiceImpl(CompaniesRepository companiesRepository) {
+    public CompaniesDomainService(CompaniesRepository companiesRepository) {
         this.companiesRepository = companiesRepository;
     }
 

@@ -1,38 +1,37 @@
-package com.tghcastro.gullveig.companies.service.models;
+package com.tghcastro.gullveig.companies.service.domain.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
-@Entity(name = "companies")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Company {
+@Entity(name="CompaniesSectors")
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+public class Sector {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Size(min = 5, max = 50, message = "Name should have between 5 and 50 characters")
+    @Size(min = 5, max = 30, message = "Name should have between 5 and 30 characters")
     @NotEmpty(message = "Name is mandatory")
     private String name;
 
-    @NotNull
+    @NotNull(message = "Enabled is mandatory")
     private boolean enabled;
 
-    @OneToOne
-    @JoinColumn(name = "sector_id", referencedColumnName = "id")
-    private Sector sector;
-
-    public Company() {
-        this.enabled = true;
+    public Sector() {
+        enabled = true;
     }
 
-    public Company(String name) {
-        this.enabled = true;
+    public Sector(String name) {
         this.name = name;
+        this.enabled = true;
     }
 
     public Long getId() {
@@ -59,27 +58,18 @@ public class Company {
         this.enabled = enabled;
     }
 
-    public Sector getSector() {
-        return sector;
-    }
-
-    public void setSector(Sector sector) {
-        this.sector = sector;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Company company = (Company) o;
-        return enabled == company.enabled &&
-                Objects.equals(id, company.id) &&
-                Objects.equals(name, company.name) &&
-                Objects.equals(sector, company.sector);
+        Sector sector = (Sector) o;
+        return enabled == sector.enabled &&
+                Objects.equals(id, sector.id) &&
+                Objects.equals(name, sector.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, enabled, sector);
+        return Objects.hash(id, name, enabled);
     }
 }

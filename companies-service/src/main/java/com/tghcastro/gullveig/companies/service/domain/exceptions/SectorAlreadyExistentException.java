@@ -1,6 +1,6 @@
-package com.tghcastro.gullveig.companies.service.exceptions;
+package com.tghcastro.gullveig.companies.service.domain.exceptions;
 
-import com.tghcastro.gullveig.companies.service.models.Sector;
+import com.tghcastro.gullveig.companies.service.domain.models.Sector;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
