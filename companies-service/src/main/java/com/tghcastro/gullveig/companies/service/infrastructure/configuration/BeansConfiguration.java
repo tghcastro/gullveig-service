@@ -15,6 +15,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class BeansConfiguration {
 
+    // NOT NEEDED - ONLY HERE AS EXAMPLE
+
     @Bean
     MetricsService metricsService(MeterRegistry meterRegistry) {
         return new PrometheusMetricsService(meterRegistry);
