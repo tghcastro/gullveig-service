@@ -29,7 +29,7 @@ public class CompaniesController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Company create(@Valid @RequestBody Company company) throws DomainException {
+    public Company create(@Valid @RequestBody Company company) {
         return companiesService.create(company);
     }
 
@@ -40,7 +40,13 @@ public class CompaniesController {
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
-    public Company update(@PathVariable Long id, @RequestBody Company company) throws DomainException {
+    public Company update(@PathVariable Long id, @RequestBody Company company) {
         return companiesService.update(id, company);
+    }
+
+    @RequestMapping(value = "{id}/{ticker}", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public Company addStock(@PathVariable Long id, @PathVariable String ticker) {
+        return companiesService.addStock(id, ticker);
     }
 }

@@ -3,6 +3,7 @@ package com.tghcastro.gullveig.companies.service.infrastructure.configuration;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.metrics.MetricsService;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.repositories.CompaniesRepository;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.repositories.SectorsRepository;
+import com.tghcastro.gullveig.companies.service.domain.interfaces.repositories.StocksRepository;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.services.CompaniesService;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.services.SectorsService;
 import com.tghcastro.gullveig.companies.service.domain.services.CompaniesDomainService;
@@ -23,8 +24,8 @@ public class BeansConfiguration {
     }
 
     @Bean
-    CompaniesService companiesService(CompaniesRepository companiesRepository, MetricsService metricsService) {
-        return new CompaniesDomainService(companiesRepository, metricsService);
+    CompaniesService companiesService(CompaniesRepository companiesRepository, StocksRepository stocksRepository, MetricsService metricsService) {
+        return new CompaniesDomainService(companiesRepository, stocksRepository, metricsService);
     }
 
     @Bean

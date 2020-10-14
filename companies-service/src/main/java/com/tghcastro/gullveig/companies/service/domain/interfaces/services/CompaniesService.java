@@ -19,5 +19,7 @@ public interface CompaniesService {
 
     Company update(Long id, Company companyToUpdate) throws CompanyNotFoundException, DuplicatedCompanyNameException;
 
-    void delete(Long id) throws CompanyNotFoundException, DomainException;
+    void delete(Long id) throws DomainException;
+
+    Company addStock(Long companyId, String ticker);
 }

@@ -4,7 +4,9 @@ import com.tghcastro.gullveig.companies.service.domain.exceptions.DomainExceptio
 import com.tghcastro.gullveig.companies.service.domain.exceptions.DuplicatedCompanyNameException;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.metrics.MetricsService;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.repositories.CompaniesRepository;
+import com.tghcastro.gullveig.companies.service.domain.interfaces.repositories.StocksRepository;
 import com.tghcastro.gullveig.companies.service.domain.models.Company;
+import com.tghcastro.gullveig.companies.service.domain.models.Stock;
 import com.tghcastro.gullveig.companies.service.domain.services.CompaniesDomainService;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,8 +15,7 @@ import tests.unit.domain.UnitTestDataHelper;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -23,18 +24,20 @@ public class CompaniesDomainServiceTests {
     private MetricsService metricsService;
     private CompaniesRepository companiesRepository;
     private CompaniesDomainService companiesDomainService;
+    private StocksRepository stocksRepository;
 
     @Before
     public void beforeTest() {
         metricsService = mock(MetricsService.class);
         companiesRepository = mock(CompaniesRepository.class);
-        companiesDomainService = new CompaniesDomainService(companiesRepository, metricsService);
+        stocksRepository = mock(StocksRepository.class);
+        companiesDomainService = new CompaniesDomainService(companiesRepository, stocksRepository, metricsService);
         Mockito.clearInvocations();
     }
 
     @Test
     public void create_ShouldCreate_WhenNoCampanyWithSameNameExists() {
-        Company company = UnitTestDataHelper.companyWithValidData();
+        Company company = UnitTestDataHelper.companyWithValidDataWithoutStocks();
 
         when(companiesRepository.saveAndFlush(any(Company.class))).thenReturn(company);
 
@@ -45,9 +48,29 @@ public class CompaniesDomainServiceTests {
     }
 
     @Test
+    public void create_ShouldCreate_WithAssociatedStocks() {
+        Company company = UnitTestDataHelper.companyWithValidDataWithoutStocks();
+        company.addStock("KO");
+        company.addStock("OK");
+        Stock stock1 = company.getStocks().get(0);
+        Stock stock2 = company.getStocks().get(1);
+
+        when(companiesRepository.saveAndFlush(any(Company.class))).thenReturn(company);
+        when(stocksRepository.saveAndFlush(stock1)).thenReturn(stock1);
+        when(stocksRepository.saveAndFlush(stock2)).thenReturn(stock2);
+
+        assertDoesNotThrow(() -> companiesDomainService.create(company));
+
+        assertEquals(2, company.getStocks().size());
+        verify(companiesRepository, times(1)).saveAndFlush(company);
+        verify(stocksRepository, times(2)).saveAndFlush(any(Stock.class));
+        verify(metricsService, times(1)).registerCompanyCreated();
+    }
+
+    @Test
     public void create_ShouldThrowError_WhenAlreadyExistsCompanyWithSame() {
-        Company alreadyExistentCompany = UnitTestDataHelper.companyWithValidData();
-        Company companyToCreate = UnitTestDataHelper.companyWithValidData();
+        Company alreadyExistentCompany = UnitTestDataHelper.companyWithValidDataWithoutStocks();
+        Company companyToCreate = UnitTestDataHelper.companyWithValidDataWithoutStocks();
 
         when(companiesRepository.findByName(alreadyExistentCompany.getName())).thenReturn(alreadyExistentCompany);
 
@@ -59,8 +82,42 @@ public class CompaniesDomainServiceTests {
     }
 
     @Test
+    public void addStock_ShouldAddStock_WhenCompanyExists() {
+        Company company = UnitTestDataHelper.companyWithValidDataWithoutStocks();
+        Stock stock = UnitTestDataHelper.stockWithValidData();
+        company.addStock(stock);
+
+        when(companiesRepository.findById(company.getId())).thenReturn(Optional.of(company));
+        when(companiesRepository.saveAndFlush(company)).thenReturn(company);
+        when(stocksRepository.saveAndFlush(any(Stock.class))).thenReturn(stock);
+
+        Company updatedCompany = assertDoesNotThrow(() -> companiesDomainService.addStock(
+                company.getId(),
+                stock.getTicker()));
+
+        assertEquals(company, updatedCompany);
+        verify(companiesRepository, times(1)).findById(company.getId());
+        verify(companiesRepository, times(1)).saveAndFlush(company);
+    }
+
+    @Test
+    public void addStock_ShouldThrowError_WhenCompanyDoesnExist() {
+        Company company = UnitTestDataHelper.companyWithValidDataWithoutStocks();
+        Stock stock = UnitTestDataHelper.stockWithValidData();
+
+        when(companiesRepository.findById(company.getId())).thenReturn(Optional.empty());
+
+        assertThrows(DomainException.class, () -> companiesDomainService.addStock(
+                company.getId(),
+                stock.getTicker()));
+
+        verify(companiesRepository, times(1)).findById(company.getId());
+        verify(companiesRepository, never()).saveAndFlush(company);
+    }
+
+    @Test
     public void update_ShouldUpdate_WhenUpdatingACompanyThatExists() {
-        Company companyToUpdate = UnitTestDataHelper.companyWithValidData();
+        Company companyToUpdate = UnitTestDataHelper.companyWithValidDataWithoutStocks();
 
         when(companiesRepository.findById(companyToUpdate.getId())).thenReturn(Optional.of(companyToUpdate));
         when(companiesRepository.saveAndFlush(companyToUpdate)).thenReturn(companyToUpdate);
@@ -76,7 +133,7 @@ public class CompaniesDomainServiceTests {
 
     @Test
     public void update_ShouldThrowError_WhenUpdatingACompanyThatDoesNotExits() {
-        Company companyToUpdate = UnitTestDataHelper.companyWithValidData();
+        Company companyToUpdate = UnitTestDataHelper.companyWithValidDataWithoutStocks();
 
         when(companiesRepository.findById(companyToUpdate.getId())).thenReturn(Optional.empty());
 
@@ -91,13 +148,13 @@ public class CompaniesDomainServiceTests {
 
     @Test
     public void update_ShouldThrowError_WhenUpdatingACompanyNameToOneAlreadyExistent() {
-        Company alreadyExistentCompany = UnitTestDataHelper.companyWithValidData(100);
-        Company companyToUpdate = UnitTestDataHelper.companyWithValidData(200);
+        Company alreadyExistentCompany = UnitTestDataHelper.companyWithValidDataWithoutStocks(100);
+        Company companyToUpdate = UnitTestDataHelper.companyWithValidDataWithoutStocks(200);
         companyToUpdate.setName(alreadyExistentCompany.getName());
 
         when(companiesRepository.findByName(companyToUpdate.getName())).thenReturn(alreadyExistentCompany);
         when(companiesRepository.findById(companyToUpdate.getId())).thenReturn(Optional.of(companyToUpdate));
-        CompaniesDomainService companiesDomainService = new CompaniesDomainService(companiesRepository, metricsService);
+        CompaniesDomainService companiesDomainService = new CompaniesDomainService(companiesRepository, stocksRepository, metricsService);
 
         assertThrows(DuplicatedCompanyNameException.class,
                 () -> companiesDomainService.update(
@@ -112,7 +169,7 @@ public class CompaniesDomainServiceTests {
 
     @Test
     public void update_ShouldThrowError_WhenUpdatingACompanyNameToAnInvalidSector() {
-        Company companyToUpdate = UnitTestDataHelper.companyWithValidData();
+        Company companyToUpdate = UnitTestDataHelper.companyWithValidDataWithoutStocks();
         companyToUpdate.setSector(null);
 
         assertThrows(DomainException.class,

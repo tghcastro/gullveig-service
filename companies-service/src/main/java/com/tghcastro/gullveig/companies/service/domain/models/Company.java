@@ -9,6 +9,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity(name = "companies")
@@ -29,13 +31,19 @@ public class Company {
     @JoinColumn(name = "sector_id", referencedColumnName = "id")
     private Sector sector;
 
+    @OneToMany(orphanRemoval = true)
+    @JoinColumn(name = "company_id")
+    private final List<Stock> stocks;
+
     public Company() {
         this.enabled = true;
+        this.stocks = new ArrayList<Stock>();
     }
 
     public Company(String name) {
         this.enabled = true;
         this.name = name;
+        this.stocks = new ArrayList<Stock>();
     }
 
     public Long getId() {
@@ -70,6 +78,10 @@ public class Company {
         this.sector = sector;
     }
 
+    public List<Stock> getStocks() {
+        return this.stocks;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -88,11 +100,23 @@ public class Company {
 
     public void validate() throws DomainException {
         if (StringUtils.isEmpty(this.name)) {
-            throw new DomainException("Company's name should not be empty", DomainErrorCode.DUPLICATED_COMPANY_NAME);
+            throw new DomainException("Company's name should not be empty", DomainErrorCode.INVALID_COMPANY_DATA);
         }
         if (this.sector == null) {
-            throw new DomainException("Company's sector should not be null", DomainErrorCode.DUPLICATED_COMPANY_NAME);
+            throw new DomainException("Company's sector should not be null", DomainErrorCode.INVALID_COMPANY_DATA);
         }
         // TODO: Should I validate name already existent here?
+    }
+
+    public void addStock(Stock stock) {
+        if (StringUtils.isEmpty(stock.getTicker())) {
+            throw new DomainException("Company's ticker should not be empty", DomainErrorCode.INVALID_COMPANY_DATA);
+        }
+        this.stocks.add(stock);
+        // TODO: Should I validate if the ticker already exists?
+    }
+
+    public void addStock(String ticker) {
+        this.addStock(new Stock(ticker));
     }
 }
