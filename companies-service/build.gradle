@@ -23,6 +23,7 @@ dependencies {
     implementation "io.cucumber:cucumber-junit:${cucumberVersion}"
     implementation "io.cucumber:cucumber-core:${cucumberVersion}"
     implementation "io.cucumber:cucumber-picocontainer:${cucumberVersion}"
+    implementation "org.mockito:mockito-core:${mockitoVersion}"
     runtimeOnly "org.postgresql:postgresql:${postgresSqlVersion}"
     runtimeOnly "com.h2database:h2:${h2DbVersion}"
     testImplementation "junit:junit:${junitVersion}"

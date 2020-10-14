@@ -1,6 +1,7 @@
 package com.tghcastro.gullveig.companies.service.domain.services;
 
 import com.tghcastro.gullveig.companies.service.domain.exceptions.CompanyNotFoundException;
+import com.tghcastro.gullveig.companies.service.domain.exceptions.DuplicatedCompanyNameException;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.metrics.MetricsService;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.repositories.CompaniesRepository;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.services.CompaniesService;
@@ -38,11 +39,22 @@ public class CompaniesDomainService implements CompaniesService {
 
     @Override
     public Optional<Company> getBySectorId(Long sectorId) {
-        return this.companiesRepository.findBySectorId(sectorId);
+        Optional<Company> foundCompany = this.companiesRepository.findBySectorId(sectorId);
+        if (!foundCompany.isPresent()) {
+            return Optional.empty();
+        }
+        return foundCompany;
     }
 
     @Override
     public Company create(Company companyToCreate) {
+        companyToCreate.validate();
+        Company alreadyExistentCompany = this.companiesRepository.findByName(companyToCreate.getName());
+
+        if (alreadyExistentCompany != null) {
+            throw new DuplicatedCompanyNameException(alreadyExistentCompany, companyToCreate);
+        }
+
         Company createdCompany = this.companiesRepository.saveAndFlush(companyToCreate);
         if (createdCompany != null) {
             this.metricsService.registerCompanyCreated();
@@ -52,8 +64,17 @@ public class CompaniesDomainService implements CompaniesService {
 
     @Override
     public Company update(Long id, Company companyToUpdate) {
+        companyToUpdate.validate();
+
         Company existentCompany = this.getById(id).get();
         BeanUtils.copyProperties(companyToUpdate, existentCompany, "id");
+
+        Company alreadyExistentCompany = this.companiesRepository.findByName(companyToUpdate.getName());
+
+        if (alreadyExistentCompany != null && !alreadyExistentCompany.getId().equals(id)) {
+            throw new DuplicatedCompanyNameException(alreadyExistentCompany, companyToUpdate);
+        }
+
         Company updatedCompany = this.companiesRepository.saveAndFlush(existentCompany);
         if (updatedCompany != null) {
             this.metricsService.registerCompanyUpdated();

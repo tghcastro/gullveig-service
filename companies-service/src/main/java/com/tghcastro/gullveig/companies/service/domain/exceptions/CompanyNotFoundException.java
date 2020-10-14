@@ -1,14 +1,10 @@
 package com.tghcastro.gullveig.companies.service.domain.exceptions;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
-import java.text.MessageFormat;
-
-@ResponseStatus(value = HttpStatus.NOT_FOUND)
-public class CompanyNotFoundException extends RuntimeException {
+//TODO: Put this in the correct place
+//@ResponseStatus(value = HttpStatus.NOT_FOUND)
+public class CompanyNotFoundException extends DomainException {
     public CompanyNotFoundException(Long id) {
-        super(MessageFormat.format("Company not found [id:{0}]", id));
+        super(String.format("Company not found [id:%s]", id), DomainErrorCode.COMPANY_NOT_FOUND);
     }
 
 }

@@ -13,4 +13,6 @@ public interface CompaniesRepository {
     List<Company> findAllByOrderByNameAsc();
 
     Optional<Company> findBySectorId(Long sectorId);
+
+    Company findByName(String name);
 }

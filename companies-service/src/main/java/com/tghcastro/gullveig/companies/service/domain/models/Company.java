@@ -1,6 +1,9 @@
 package com.tghcastro.gullveig.companies.service.domain.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.tghcastro.gullveig.companies.service.domain.exceptions.DomainErrorCode;
+import com.tghcastro.gullveig.companies.service.domain.exceptions.DomainException;
+import io.micrometer.core.instrument.util.StringUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -81,5 +84,15 @@ public class Company {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, enabled, sector);
+    }
+
+    public void validate() throws DomainException {
+        if (StringUtils.isEmpty(this.name)) {
+            throw new DomainException("Company's name should not be empty", DomainErrorCode.DUPLICATED_COMPANY_NAME);
+        }
+        if (this.sector == null) {
+            throw new DomainException("Company's sector should not be null", DomainErrorCode.DUPLICATED_COMPANY_NAME);
+        }
+        // TODO: Should I validate name already existent here?
     }
 }

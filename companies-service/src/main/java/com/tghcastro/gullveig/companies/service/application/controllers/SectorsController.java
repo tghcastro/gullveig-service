@@ -3,6 +3,7 @@ package com.tghcastro.gullveig.companies.service.application.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.tghcastro.gullveig.companies.service.domain.exceptions.DomainException;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.services.SectorsService;
 import com.tghcastro.gullveig.companies.service.domain.models.Sector;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -47,7 +48,7 @@ public class SectorsController {
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable Long id) throws DomainException {
         sectorsService.delete(id);
     }
 
