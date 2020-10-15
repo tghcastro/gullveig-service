@@ -61,8 +61,6 @@ public class CompaniesDomainService implements CompaniesService {
 
         Company createdCompany = this.companiesRepository.saveAndFlush(companyToCreate);
 
-        companyToCreate.getStocks().forEach(this.stocksRepository::saveAndFlush);
-
         if (createdCompany != null) {
             this.metricsService.registerCompanyCreated();
         }

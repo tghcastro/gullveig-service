@@ -48,26 +48,6 @@ public class CompaniesDomainServiceTests {
     }
 
     @Test
-    public void create_ShouldCreate_WithAssociatedStocks() {
-        Company company = UnitTestDataHelper.companyWithValidDataWithoutStocks();
-        company.addStock("KO");
-        company.addStock("OK");
-        Stock stock1 = company.getStocks().get(0);
-        Stock stock2 = company.getStocks().get(1);
-
-        when(companiesRepository.saveAndFlush(any(Company.class))).thenReturn(company);
-        when(stocksRepository.saveAndFlush(stock1)).thenReturn(stock1);
-        when(stocksRepository.saveAndFlush(stock2)).thenReturn(stock2);
-
-        assertDoesNotThrow(() -> companiesDomainService.create(company));
-
-        assertEquals(2, company.getStocks().size());
-        verify(companiesRepository, times(1)).saveAndFlush(company);
-        verify(stocksRepository, times(2)).saveAndFlush(any(Stock.class));
-        verify(metricsService, times(1)).registerCompanyCreated();
-    }
-
-    @Test
     public void create_ShouldThrowError_WhenAlreadyExistsCompanyWithSame() {
         Company alreadyExistentCompany = UnitTestDataHelper.companyWithValidDataWithoutStocks();
         Company companyToCreate = UnitTestDataHelper.companyWithValidDataWithoutStocks();
