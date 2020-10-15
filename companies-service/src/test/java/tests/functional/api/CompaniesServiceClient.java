@@ -73,4 +73,15 @@ public class CompaniesServiceClient extends BaseClient {
         }
         return null;
     }
+
+    public PostCompanyStockResponse addStock(String id, String ticker) {
+        HttpPost request = new HttpPost(String.format("http://localhost:8080/api/v1/companies/%s/%s", id, ticker));
+        request.addHeader("Content-Type", "application/json");
+        try {
+            return this.execute(request, PostCompanyStockResponse.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

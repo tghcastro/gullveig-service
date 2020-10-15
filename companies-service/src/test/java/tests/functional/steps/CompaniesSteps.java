@@ -6,14 +6,10 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import tests.functional.CompaniesServiceAdministrator;
 import tests.functional.ScenarioDataContext;
-import tests.functional.api.contracts.PostCompanyRequest;
-import tests.functional.api.contracts.PostCompanyResponse;
-import tests.functional.api.contracts.PostSectorResponse;
-import tests.functional.api.contracts.PutCompanyResponse;
+import tests.functional.api.contracts.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 
 public class CompaniesSteps {
     private final ScenarioDataContext scenarioDataContext;
@@ -77,5 +73,28 @@ public class CompaniesSteps {
         companyToUpdate.setSector(sector);
         PutCompanyResponse updatedCompany = companiesServiceAdministrator.updateCompany(companyToUpdate);
         scenarioDataContext.put("updatedCompany", updatedCompany);
+    }
+
+    @When("a client tries to register the stock {string}")
+    public void aClientTriesToRegisterTheStock(String ticker) {
+        PostCompanyResponse companyResponse = scenarioDataContext.get("createdCompany");
+        PostCompanyStockResponse postCompanyStockResponse = companiesServiceAdministrator.addStock(companyResponse.getId(), ticker);
+        scenarioDataContext.put("companyWithStockAdded", postCompanyStockResponse);
+        scenarioDataContext.put("stockTickerAdded", ticker);
+    }
+
+    @Then("stock is added in this company")
+    public void stockIsAddedInThisCompany() {
+        PostCompanyStockResponse postCompanyStockResponse = scenarioDataContext.get("companyWithStockAdded");
+        String ticker = scenarioDataContext.get("stockTickerAdded");
+        assertThat(postCompanyStockResponse.getStocks().size(), is(greaterThan(0)));
+        assertThat(postCompanyStockResponse.getStocks().get(0).getTicker(), is(ticker));
+    }
+
+    @And("this company has {int} stock associated")
+    public void thisCompanyHasStockAssociated(int numberOfStocks) {
+        PostCompanyStockResponse postCompanyStockResponse = scenarioDataContext.get("companyWithStockAdded");
+        String ticker = scenarioDataContext.get("stockTickerAdded");
+        assertThat(postCompanyStockResponse.getStocks().size(), is(numberOfStocks));
     }
 }
