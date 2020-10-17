@@ -47,6 +47,6 @@ public class CompaniesController {
     @RequestMapping(value = "{id}/{ticker}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public Company addStock(@PathVariable Long id, @PathVariable String ticker) {
-        return companiesService.addStock(id, ticker);
+        return companiesService.addStock(id, ticker).onSuccessReturnValue();
     }
 }

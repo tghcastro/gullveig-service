@@ -1,8 +1,5 @@
 package com.tghcastro.gullveig.companies.service.domain.interfaces.services;
 
-import com.tghcastro.gullveig.companies.service.domain.exceptions.CompanyNotFoundException;
-import com.tghcastro.gullveig.companies.service.domain.exceptions.DomainException;
-import com.tghcastro.gullveig.companies.service.domain.exceptions.DuplicatedCompanyNameException;
 import com.tghcastro.gullveig.companies.service.domain.models.Company;
 import com.tghcastro.gullveig.companies.service.domain.results.DomainResult;
 
@@ -12,15 +9,15 @@ import java.util.Optional;
 public interface CompaniesService<T> {
     List<Company> getAll();
 
-    Optional<T> getById(Long id) throws CompanyNotFoundException;
+    Optional<T> getById(Long id);
 
-    Optional<T> getBySectorId(Long id) throws CompanyNotFoundException;
+    Optional<T> getBySectorId(Long id);
 
-    DomainResult<T> create(Company companyToCreate) throws DomainException;
+    DomainResult<T> create(Company companyToCreate);
 
-    DomainResult<T> update(Long id, Company companyToUpdate) throws CompanyNotFoundException, DuplicatedCompanyNameException;
+    DomainResult<T> update(Long id, Company companyToUpdate);
 
-    DomainResult<T> delete(Long id) throws DomainException;
+    DomainResult<T> delete(Long id);
 
-    Company addStock(Long companyId, String ticker);
+    DomainResult<T> addStock(Long companyId, String ticker);
 }

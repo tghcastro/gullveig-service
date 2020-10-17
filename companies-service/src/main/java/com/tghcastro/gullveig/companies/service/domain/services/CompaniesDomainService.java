@@ -1,6 +1,5 @@
 package com.tghcastro.gullveig.companies.service.domain.services;
 
-import com.tghcastro.gullveig.companies.service.domain.exceptions.CompanyNotFoundException;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.metrics.MetricsService;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.repositories.CompaniesRepository;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.repositories.StocksRepository;
@@ -35,11 +34,7 @@ public class CompaniesDomainService implements CompaniesService<Company> {
 
     @Override
     public Optional<Company> getById(Long id) {
-        Optional<Company> foundCompany = this.companiesRepository.findById(id);
-        if (!foundCompany.isPresent()) {
-            throw new CompanyNotFoundException(id);
-        }
-        return foundCompany;
+        return this.companiesRepository.findById(id);
     }
 
     @Override
@@ -58,7 +53,11 @@ public class CompaniesDomainService implements CompaniesService<Company> {
     public DomainResult<Company> update(Long id, Company companyToUpdate) {
         return companyToUpdate.validate()
                 .onSuccess(() -> assureNotExistsWithSameName(companyToUpdate))
-                .onSuccess(() -> internalUpdate(id, companyToUpdate));
+                .onSuccess(() -> assureExists(id))
+                .onSuccess(lastResult -> {
+                    BeanUtils.copyProperties(companyToUpdate, lastResult.value(), "id");
+                    return internalUpdate(lastResult.value());
+                });
     }
 
     @Override
@@ -68,18 +67,28 @@ public class CompaniesDomainService implements CompaniesService<Company> {
     }
 
     @Override
-    public Company addStock(Long companyId, String ticker) {
-        Company company = this.getById(companyId).get();
-        Stock stock = new Stock(ticker);
-        company.addStock(this.stocksRepository.saveAndFlush(stock));
-        return internalUpdate(companyId, company).onSuccessReturnValue();
+    public DomainResult<Company> addStock(Long companyId, String ticker) {
+        return assureExists(companyId).onSuccess(lastResult -> {
+            Stock stock = new Stock(ticker);
+            lastResult.value().addStock(this.stocksRepository.saveAndFlush(stock));
+            return internalUpdate(companyId, lastResult.value());
+        });
     }
 
-    private DomainResult<Company> internalUpdate(Long id, Company dataToUpdate) {
-        Company company = this.getById(id).get();
+    private DomainResult<Company> internalUpdate(Long companyId, Company dataToUpdate) {
+        Company company = this.getById(companyId).orElse(null);
         BeanUtils.copyProperties(dataToUpdate, company, "id");
 
-        Company updatedCompany = this.companiesRepository.saveAndFlush(dataToUpdate);
+        Company updatedCompany = this.companiesRepository.saveAndFlush(company);
+        if (updatedCompany != null) {
+            this.metricsService.registerCompanyUpdated();
+        }
+
+        return new DomainResult<>(updatedCompany);
+    }
+
+    private DomainResult<Company> internalUpdate(Company companyToUpdate) {
+        Company updatedCompany = this.companiesRepository.saveAndFlush(companyToUpdate);
         if (updatedCompany != null) {
             this.metricsService.registerCompanyUpdated();
         }
@@ -107,9 +116,20 @@ public class CompaniesDomainService implements CompaniesService<Company> {
     }
 
     private DomainResult<Company> assureExists(Long id) {
-        Company company = this.getById(id).get();
+        Company company = this.getById(id).orElse(null);
 
         if (company == null) {
+            String error = ErrorMessagesResult.CompanyDoesNotExists(id);
+            return new DomainResult<>(null, false, error);
+        }
+
+        return new DomainResult<>(company);
+    }
+
+    private DomainResult<Company> assureNotExists(Long id) {
+        Company company = this.getById(id).orElse(null);
+
+        if (company != null) {
             String error = ErrorMessagesResult.CompanyDoesNotExists(id);
             return new DomainResult<>(null, false, error);
         }

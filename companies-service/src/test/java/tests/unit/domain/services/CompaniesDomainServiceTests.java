@@ -1,6 +1,5 @@
 package tests.unit.domain.services;
 
-import com.tghcastro.gullveig.companies.service.domain.exceptions.DomainException;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.metrics.MetricsService;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.repositories.CompaniesRepository;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.repositories.StocksRepository;
@@ -76,11 +75,12 @@ public class CompaniesDomainServiceTests {
         when(companiesRepository.saveAndFlush(company)).thenReturn(company);
         when(stocksRepository.saveAndFlush(any(Stock.class))).thenReturn(stock);
 
-        Company updatedCompany = assertDoesNotThrow(() -> companiesDomainService.addStock(
+        DomainResult<Company> result = companiesDomainService.addStock(
                 company.getId(),
-                stock.getTicker()));
+                stock.getTicker());
 
-        assertEquals(company, updatedCompany);
+        assertTrue(result.succeeded());
+        assertEquals(company, result.value());
         verify(companiesRepository, times(2)).findById(company.getId());
         verify(companiesRepository, times(1)).saveAndFlush(company);
     }
@@ -92,9 +92,12 @@ public class CompaniesDomainServiceTests {
 
         when(companiesRepository.findById(company.getId())).thenReturn(Optional.empty());
 
-        assertThrows(DomainException.class, () -> companiesDomainService.addStock(
+        DomainResult<Company> result = companiesDomainService.addStock(
                 company.getId(),
-                stock.getTicker()));
+                stock.getTicker());
+
+        assertTrue(result.failed());
+        assertThat(result.error(), containsString("A company with the id [1] does not exists."));
 
         verify(companiesRepository, times(1)).findById(company.getId());
         verify(companiesRepository, never()).saveAndFlush(company);
@@ -122,10 +125,10 @@ public class CompaniesDomainServiceTests {
 
         when(companiesRepository.findById(companyToUpdate.getId())).thenReturn(Optional.empty());
 
-        assertThrows(DomainException.class,
-                () -> companiesDomainService.update(
-                        companyToUpdate.getId(),
-                        companyToUpdate));
+        DomainResult<Company> result = companiesDomainService.update(companyToUpdate.getId(), companyToUpdate);
+
+        assertTrue(result.failed());
+        assertThat(result.error(), containsString("A company with the id [1] does not exists."));
 
         verify(companiesRepository, times(1)).findByName(companyToUpdate.getName());
         verify(companiesRepository, times(1)).findById(companyToUpdate.getId());
