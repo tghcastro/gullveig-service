@@ -81,7 +81,7 @@ public class CompaniesDomainServiceTests {
 
         assertTrue(result.succeeded());
         assertEquals(company, result.value());
-        verify(companiesRepository, times(2)).findById(company.getId());
+        verify(companiesRepository, times(1)).findById(company.getId());
         verify(companiesRepository, times(1)).saveAndFlush(company);
     }
 
