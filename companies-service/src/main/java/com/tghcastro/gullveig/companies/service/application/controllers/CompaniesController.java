@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping("api/v1/companies")
 public class CompaniesController {
     @Autowired
-    private CompaniesService companiesService;
+    private CompaniesService<Company> companiesService;
 
     @GetMapping
     public List<Company> list() {
@@ -30,7 +30,7 @@ public class CompaniesController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Company create(@Valid @RequestBody Company company) {
-        return (Company) companiesService.create(company).onSuccessReturnValue();
+        return companiesService.create(company).onSuccessReturnValue();
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
@@ -41,7 +41,7 @@ public class CompaniesController {
 
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public Company update(@PathVariable Long id, @RequestBody Company company) {
-        return companiesService.update(id, company);
+        return companiesService.update(id, company).onSuccessReturnValue();
     }
 
     @RequestMapping(value = "{id}/{ticker}", method = RequestMethod.POST)

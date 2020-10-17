@@ -2,6 +2,7 @@ package tests.unit.domain.models;
 
 import com.tghcastro.gullveig.companies.service.domain.exceptions.DomainException;
 import com.tghcastro.gullveig.companies.service.domain.models.Company;
+import com.tghcastro.gullveig.companies.service.domain.results.DomainResult;
 import org.junit.Test;
 import tests.unit.domain.UnitTestDataHelper;
 
@@ -18,21 +19,27 @@ public class CompaniesTests {
     public void validate_ShouldThrowError_WithEmptyName() {
         Company company = UnitTestDataHelper.companyWithValidDataWithoutStocks();
         company.setName("");
-        assertThrows(DomainException.class, company::validate);
+        DomainResult<Company> result = company.validate();
+        assertTrue(result.failed());
+        assertEquals("Company's name should not be empty", result.error());
     }
 
     @Test
     public void validate_ShouldThrowError_WithNullName() {
         Company company = UnitTestDataHelper.companyWithValidDataWithoutStocks();
         company.setName(null);
-        assertThrows(DomainException.class, company::validate);
+        DomainResult<Company> result = company.validate();
+        assertTrue(result.failed());
+        assertEquals("Company's name should not be empty", result.error());
     }
 
     @Test
     public void validate_ShouldThrowError_WithNullSector() {
         Company company = UnitTestDataHelper.companyWithValidDataWithoutStocks();
         company.setSector(null);
-        assertThrows(DomainException.class, company::validate);
+        DomainResult<Company> result = company.validate();
+        assertTrue(result.failed());
+        assertEquals("Company's sector should not be null", result.error());
     }
 
     @Test

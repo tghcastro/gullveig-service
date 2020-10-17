@@ -2,24 +2,30 @@ package com.tghcastro.gullveig.companies.service.domain.results;
 
 import com.tghcastro.gullveig.companies.service.domain.DomainAction;
 
-public class DomainResult {
-    private final Object value;
+public class DomainResult<T> {
+    private final T value;
     private final boolean success;
     private final String errorMessage;
 
-    public DomainResult(Object value, boolean success, String errorMessage) {
+    public DomainResult(T value, boolean success, String errorMessage) {
         this.value = value;
         this.success = success;
         this.errorMessage = errorMessage;
     }
 
-    public static DomainResult Ok(Object value) {
-        return new DomainResult(value, true, null);
+    public DomainResult(T value) {
+        this.value = value;
+        this.success = true;
+        this.errorMessage = null;
     }
 
-    public static DomainResult error(Object value, String errorMessage) {
-        return new DomainResult(value, false, errorMessage);
-    }
+//    public static DomainResult<T> Ok(T value) {
+//        return new DomainResult<T>(value, true, null);
+//    }
+//
+//    public static DomainResult<T> error(Object value, String errorMessage) {
+//        return new DomainResult<T>(value, false, errorMessage);
+//    }
 
     public boolean failed() {
         return !success;
@@ -29,18 +35,28 @@ public class DomainResult {
         return success;
     }
 
-    public DomainResult onSuccess(DomainAction action) {
-        return action.execute();
+    public DomainResult<T> onSuccess(DomainAction<T> action) {
+        if (this.succeeded()) {
+            return action.execute();
+        }
+        return this;
     }
 
-    public DomainResult onFailure(DomainAction action) {
-        return action.execute();
+    public DomainResult<T> onFailure(DomainAction<T> action) {
+        if (this.failed()) {
+            return action.execute();
+        }
+        return this;
     }
 
-    public Object onSuccessReturnValue() {
+    public T onSuccessReturnValue() {
         if (this.succeeded()) {
             return value;
         }
         return null;
+    }
+
+    public String error() {
+        return errorMessage;
     }
 }

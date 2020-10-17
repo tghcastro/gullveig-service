@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CompaniesDomainService implements CompaniesService {
+public class CompaniesDomainService implements CompaniesService<Company> {
 
     private final CompaniesRepository companiesRepository;
     private final StocksRepository stocksRepository;
@@ -53,10 +53,20 @@ public class CompaniesDomainService implements CompaniesService {
     }
 
     @Override
-    public DomainResult create(Company companyToCreate) {
+    public DomainResult<Company> create(Company companyToCreate) {
         return companyToCreate.validate()
                 .onSuccess(() -> notAlreadyExists(companyToCreate))
                 .onSuccess(() -> internalCreate(companyToCreate));
+    }
+
+    @Override
+    public DomainResult<Company> update(Long id, Company companyToUpdate) {
+        return companyToUpdate.validate().onSuccess(() -> {
+            Company existentCompany = this.getById(id).get();
+            BeanUtils.copyProperties(companyToUpdate, existentCompany, "id");
+            Company company = internalUpdate(existentCompany);
+            return new DomainResult<Company>(company);
+        });
     }
 
     @Override
@@ -67,13 +77,7 @@ public class CompaniesDomainService implements CompaniesService {
         return internalUpdate(company);
     }
 
-    @Override
-    public Company update(Long id, Company companyToUpdate) {
-        companyToUpdate.validate();
-        Company existentCompany = this.getById(id).get();
-        BeanUtils.copyProperties(companyToUpdate, existentCompany, "id");
-        return internalUpdate(existentCompany);
-    }
+
 
     @Override
     public void delete(Long id) {
@@ -86,11 +90,16 @@ public class CompaniesDomainService implements CompaniesService {
     }
 
     private Company internalUpdate(Company companyToUpdate) {
-        Company alreadyExistentCompany = this.companiesRepository.findByName(companyToUpdate.getName());
+//        Company alreadyExistentCompany = this.companiesRepository.findByName(companyToUpdate.getName());
+//
+//        if (alreadyExistentCompany != null && !alreadyExistentCompany.getId().equals(companyToUpdate.getId())) {
+//            throw new DuplicatedCompanyNameException(alreadyExistentCompany, companyToUpdate);
+//        }
 
-        if (alreadyExistentCompany != null && !alreadyExistentCompany.getId().equals(companyToUpdate.getId())) {
-            throw new DuplicatedCompanyNameException(alreadyExistentCompany, companyToUpdate);
-        }
+        notAlreadyExists(companyToUpdate).onFailure(() -> {
+            throw new DuplicatedCompanyNameException();
+        });
+
 
         Company updatedCompany = this.companiesRepository.saveAndFlush(companyToUpdate);
         if (updatedCompany != null) {
@@ -99,24 +108,29 @@ public class CompaniesDomainService implements CompaniesService {
         return updatedCompany;
     }
 
-    private DomainResult internalCreate(Company companyToCreate) {
+    private DomainResult<Company> internalCreate(Company companyToCreate) {
         Company createdCompany = this.companiesRepository.saveAndFlush(companyToCreate);
 
         if (createdCompany != null) {
             this.metricsService.registerCompanyCreated();
         }
 
-        return DomainResult.Ok(createdCompany);
+        return new DomainResult<>(companyToCreate);
     }
 
-    private DomainResult notAlreadyExists(Company someCompany) {
+    private DomainResult<Company> notAlreadyExists(Company someCompany) {
         Company alreadyExistentCompany = this.companiesRepository.findByName(someCompany.getName());
 
-        if (alreadyExistentCompany != null) {
+//        if (alreadyExistentCompany != null) {
+//            String error = ErrorMessagesResult.DuplicatedCompany(someCompany, alreadyExistentCompany);
+//            return new DomainResult<>(someCompany, false, error);
+//        }
+
+        if (alreadyExistentCompany != null && !alreadyExistentCompany.getId().equals(someCompany.getId())) {
             String error = ErrorMessagesResult.DuplicatedCompany(someCompany, alreadyExistentCompany);
-            return DomainResult.error(someCompany, error);
+            return new DomainResult<>(someCompany, false, error);
         }
 
-        return DomainResult.Ok(someCompany);
+        return new DomainResult<>(someCompany);
     }
 }

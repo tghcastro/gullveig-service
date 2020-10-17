@@ -9,16 +9,16 @@ import com.tghcastro.gullveig.companies.service.domain.results.DomainResult;
 import java.util.List;
 import java.util.Optional;
 
-public interface CompaniesService {
+public interface CompaniesService<T> {
     List<Company> getAll();
 
-    Optional<Company> getById(Long id) throws CompanyNotFoundException;
+    Optional<T> getById(Long id) throws CompanyNotFoundException;
 
-    Optional<Company> getBySectorId(Long id) throws CompanyNotFoundException;
+    Optional<T> getBySectorId(Long id) throws CompanyNotFoundException;
 
-    DomainResult create(Company companyToCreate) throws DomainException;
+    DomainResult<T> create(Company companyToCreate) throws DomainException;
 
-    Company update(Long id, Company companyToUpdate) throws CompanyNotFoundException, DuplicatedCompanyNameException;
+    DomainResult<T> update(Long id, Company companyToUpdate) throws CompanyNotFoundException, DuplicatedCompanyNameException;
 
     void delete(Long id) throws DomainException;
 

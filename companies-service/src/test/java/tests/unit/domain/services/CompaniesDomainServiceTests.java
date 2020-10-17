@@ -7,6 +7,7 @@ import com.tghcastro.gullveig.companies.service.domain.interfaces.repositories.C
 import com.tghcastro.gullveig.companies.service.domain.interfaces.repositories.StocksRepository;
 import com.tghcastro.gullveig.companies.service.domain.models.Company;
 import com.tghcastro.gullveig.companies.service.domain.models.Stock;
+import com.tghcastro.gullveig.companies.service.domain.results.DomainResult;
 import com.tghcastro.gullveig.companies.service.domain.services.CompaniesDomainService;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +16,8 @@ import tests.unit.domain.UnitTestDataHelper;
 
 import java.util.Optional;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -49,12 +52,15 @@ public class CompaniesDomainServiceTests {
 
     @Test
     public void create_ShouldThrowError_WhenAlreadyExistsCompanyWithSame() {
-        Company alreadyExistentCompany = UnitTestDataHelper.companyWithValidDataWithoutStocks();
+        Company alreadyExistentCompany = UnitTestDataHelper.companyWithValidDataWithoutStocks(100);
         Company companyToCreate = UnitTestDataHelper.companyWithValidDataWithoutStocks();
 
         when(companiesRepository.findByName(alreadyExistentCompany.getName())).thenReturn(alreadyExistentCompany);
 
-        assertThrows(DuplicatedCompanyNameException.class, () -> companiesDomainService.create(companyToCreate));
+        DomainResult<Company> result = companiesDomainService.create(companyToCreate);
+
+        assertTrue(result.failed());
+        assertThat(result.error(), containsString("A company with the same name already exists"));
 
         verify(companiesRepository, only()).findByName(alreadyExistentCompany.getName());
         verify(companiesRepository, times(0)).saveAndFlush(any(Company.class));
@@ -148,14 +154,14 @@ public class CompaniesDomainServiceTests {
     }
 
     @Test
-    public void update_ShouldThrowError_WhenUpdatingACompanyNameToAnInvalidSector() {
+    public void update_ShouldThrowError_WhenUpdatingACompanyToAnInvalidSector() {
         Company companyToUpdate = UnitTestDataHelper.companyWithValidDataWithoutStocks();
         companyToUpdate.setSector(null);
 
-        assertThrows(DomainException.class,
-                () -> companiesDomainService.update(
-                        companyToUpdate.getId(),
-                        companyToUpdate));
+        DomainResult<Company> result = companiesDomainService.update(companyToUpdate.getId(), companyToUpdate);
+
+        assertTrue(result.failed());
+        assertThat(result.error(), containsString("Company's sector should not be null"));
 
         verify(companiesRepository, never()).findById(companyToUpdate.getId());
         verify(companiesRepository, never()).findByName(companyToUpdate.getName());
