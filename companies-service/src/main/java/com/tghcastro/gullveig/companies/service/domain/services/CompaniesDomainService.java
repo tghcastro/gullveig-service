@@ -71,20 +71,8 @@ public class CompaniesDomainService implements CompaniesService<Company> {
         return assureExists(companyId).onSuccess(lastResult -> {
             Stock stock = new Stock(ticker);
             lastResult.value().addStock(this.stocksRepository.saveAndFlush(stock));
-            return internalUpdate(companyId, lastResult.value());
+            return internalUpdate(lastResult.value());
         });
-    }
-
-    private DomainResult<Company> internalUpdate(Long companyId, Company dataToUpdate) {
-        Company company = this.getById(companyId).orElse(null);
-        BeanUtils.copyProperties(dataToUpdate, company, "id");
-
-        Company updatedCompany = this.companiesRepository.saveAndFlush(company);
-        if (updatedCompany != null) {
-            this.metricsService.registerCompanyUpdated();
-        }
-
-        return new DomainResult<>(updatedCompany);
     }
 
     private DomainResult<Company> internalUpdate(Company companyToUpdate) {

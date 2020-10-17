@@ -55,13 +55,21 @@ public class CompaniesSteps {
     @When("a client tries to update this company name")
     public void aClientTriesToUpdateThisCompanyName() {
         PostCompanyResponse companyToUpdate = scenarioDataContext.get("createdCompany");
-        companyToUpdate.setName("NEW " + System.currentTimeMillis());
+        String newName = "NEW " + System.currentTimeMillis();
+        companyToUpdate.setName(newName);
         PutCompanyResponse updatedCompany = companiesServiceAdministrator.updateCompany(companyToUpdate);
+        scenarioDataContext.put("companyToUpdate", companyToUpdate);
         scenarioDataContext.put("updatedCompany", updatedCompany);
     }
 
     @Then("the company correctly updated")
     public void theCompanyCorrectlyUpdated() {
+        PostCompanyResponse companyToUpdate = scenarioDataContext.get("companyToUpdate");
+        PutCompanyResponse updatedCompany = scenarioDataContext.get("updatedCompany");
+        assertThat(updatedCompany.getId(), is(companyToUpdate.getId()));
+        assertThat(updatedCompany.getName(), is(companyToUpdate.getName()));
+        assertThat(updatedCompany.getSector().getId(), is(companyToUpdate.getSector().getId()));
+        assertThat(updatedCompany.getStocks().size(), is(companyToUpdate.getStocks().size()));
     }
 
     @When("a client tries to update this company to this another sector")
@@ -73,6 +81,7 @@ public class CompaniesSteps {
         companyToUpdate.setSector(sector);
         PutCompanyResponse updatedCompany = companiesServiceAdministrator.updateCompany(companyToUpdate);
         scenarioDataContext.put("updatedCompany", updatedCompany);
+        scenarioDataContext.put("companyToUpdate", companyToUpdate);
     }
 
     @When("a client tries to register the stock {string}")
@@ -96,5 +105,6 @@ public class CompaniesSteps {
         PostCompanyStockResponse postCompanyStockResponse = scenarioDataContext.get("companyWithStockAdded");
         String ticker = scenarioDataContext.get("stockTickerAdded");
         assertThat(postCompanyStockResponse.getStocks().size(), is(numberOfStocks));
+        assertThat(postCompanyStockResponse.getStocks().get(0).getTicker(), is(ticker));
     }
 }
