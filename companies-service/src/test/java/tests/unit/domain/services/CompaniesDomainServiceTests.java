@@ -1,7 +1,6 @@
 package tests.unit.domain.services;
 
 import com.tghcastro.gullveig.companies.service.domain.exceptions.DomainException;
-import com.tghcastro.gullveig.companies.service.domain.exceptions.DuplicatedCompanyNameException;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.metrics.MetricsService;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.repositories.CompaniesRepository;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.repositories.StocksRepository;
@@ -82,7 +81,7 @@ public class CompaniesDomainServiceTests {
                 stock.getTicker()));
 
         assertEquals(company, updatedCompany);
-        verify(companiesRepository, times(1)).findById(company.getId());
+        verify(companiesRepository, times(2)).findById(company.getId());
         verify(companiesRepository, times(1)).saveAndFlush(company);
     }
 
@@ -128,7 +127,8 @@ public class CompaniesDomainServiceTests {
                         companyToUpdate.getId(),
                         companyToUpdate));
 
-        verify(companiesRepository, only()).findById(companyToUpdate.getId());
+        verify(companiesRepository, times(1)).findByName(companyToUpdate.getName());
+        verify(companiesRepository, times(1)).findById(companyToUpdate.getId());
         verify(metricsService, never()).registerCompanyUpdated();
     }
 
@@ -142,13 +142,12 @@ public class CompaniesDomainServiceTests {
         when(companiesRepository.findById(companyToUpdate.getId())).thenReturn(Optional.of(companyToUpdate));
         CompaniesDomainService companiesDomainService = new CompaniesDomainService(companiesRepository, stocksRepository, metricsService);
 
-        assertThrows(DuplicatedCompanyNameException.class,
-                () -> companiesDomainService.update(
-                        companyToUpdate.getId(),
-                        companyToUpdate));
+        DomainResult<Company> result = companiesDomainService.update(companyToUpdate.getId(), companyToUpdate);
 
-        verify(companiesRepository, times(1)).findById(companyToUpdate.getId());
-        verify(companiesRepository, times(1)).findByName(alreadyExistentCompany.getName());
+        assertTrue(result.failed());
+        assertThat(result.error(), containsString("A company with the same name already exists"));
+
+        verify(companiesRepository, only()).findByName(alreadyExistentCompany.getName());
         verify(companiesRepository, never()).saveAndFlush(any(Company.class));
         verify(metricsService, never()).registerCompanyUpdated();
     }

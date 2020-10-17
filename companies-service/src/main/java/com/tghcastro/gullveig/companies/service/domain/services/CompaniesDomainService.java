@@ -1,7 +1,6 @@
 package com.tghcastro.gullveig.companies.service.domain.services;
 
 import com.tghcastro.gullveig.companies.service.domain.exceptions.CompanyNotFoundException;
-import com.tghcastro.gullveig.companies.service.domain.exceptions.DuplicatedCompanyNameException;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.metrics.MetricsService;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.repositories.CompaniesRepository;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.repositories.StocksRepository;
@@ -55,18 +54,15 @@ public class CompaniesDomainService implements CompaniesService<Company> {
     @Override
     public DomainResult<Company> create(Company companyToCreate) {
         return companyToCreate.validate()
-                .onSuccess(() -> notAlreadyExists(companyToCreate))
+                .onSuccess(() -> assureNotExists(companyToCreate))
                 .onSuccess(() -> internalCreate(companyToCreate));
     }
 
     @Override
     public DomainResult<Company> update(Long id, Company companyToUpdate) {
-        return companyToUpdate.validate().onSuccess(() -> {
-            Company existentCompany = this.getById(id).get();
-            BeanUtils.copyProperties(companyToUpdate, existentCompany, "id");
-            Company company = internalUpdate(existentCompany);
-            return new DomainResult<Company>(company);
-        });
+        return companyToUpdate.validate()
+                .onSuccess(() -> assureNotExists(companyToUpdate))
+                .onSuccess(() -> internalUpdate(id, companyToUpdate));
     }
 
     @Override
@@ -74,9 +70,8 @@ public class CompaniesDomainService implements CompaniesService<Company> {
         Company company = this.getById(companyId).get();
         Stock stock = new Stock(ticker);
         company.addStock(this.stocksRepository.saveAndFlush(stock));
-        return internalUpdate(company);
+        return internalUpdate(companyId, company).onSuccessReturnValue();
     }
-
 
 
     @Override
@@ -89,23 +84,16 @@ public class CompaniesDomainService implements CompaniesService<Company> {
         }
     }
 
-    private Company internalUpdate(Company companyToUpdate) {
-//        Company alreadyExistentCompany = this.companiesRepository.findByName(companyToUpdate.getName());
-//
-//        if (alreadyExistentCompany != null && !alreadyExistentCompany.getId().equals(companyToUpdate.getId())) {
-//            throw new DuplicatedCompanyNameException(alreadyExistentCompany, companyToUpdate);
-//        }
-
-        notAlreadyExists(companyToUpdate).onFailure(() -> {
-            throw new DuplicatedCompanyNameException();
-        });
-
+    private DomainResult<Company> internalUpdate(Long id, Company companyToUpdate) {
+        Company existentCompany = this.getById(id).get();
+        BeanUtils.copyProperties(companyToUpdate, existentCompany, "id");
 
         Company updatedCompany = this.companiesRepository.saveAndFlush(companyToUpdate);
         if (updatedCompany != null) {
             this.metricsService.registerCompanyUpdated();
         }
-        return updatedCompany;
+
+        return new DomainResult<>(updatedCompany);
     }
 
     private DomainResult<Company> internalCreate(Company companyToCreate) {
@@ -118,13 +106,8 @@ public class CompaniesDomainService implements CompaniesService<Company> {
         return new DomainResult<>(companyToCreate);
     }
 
-    private DomainResult<Company> notAlreadyExists(Company someCompany) {
+    private DomainResult<Company> assureNotExists(Company someCompany) {
         Company alreadyExistentCompany = this.companiesRepository.findByName(someCompany.getName());
-
-//        if (alreadyExistentCompany != null) {
-//            String error = ErrorMessagesResult.DuplicatedCompany(someCompany, alreadyExistentCompany);
-//            return new DomainResult<>(someCompany, false, error);
-//        }
 
         if (alreadyExistentCompany != null && !alreadyExistentCompany.getId().equals(someCompany.getId())) {
             String error = ErrorMessagesResult.DuplicatedCompany(someCompany, alreadyExistentCompany);
