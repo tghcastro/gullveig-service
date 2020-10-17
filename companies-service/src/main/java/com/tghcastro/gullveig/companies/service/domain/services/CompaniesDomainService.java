@@ -44,25 +44,27 @@ public class CompaniesDomainService implements CompaniesService<Company> {
 
     @Override
     public Optional<Company> getBySectorId(Long sectorId) {
-        Optional<Company> foundCompany = this.companiesRepository.findBySectorId(sectorId);
-        if (!foundCompany.isPresent()) {
-            return Optional.empty();
-        }
-        return foundCompany;
+        return this.companiesRepository.findBySectorId(sectorId);
     }
 
     @Override
     public DomainResult<Company> create(Company companyToCreate) {
         return companyToCreate.validate()
-                .onSuccess(() -> assureNotExists(companyToCreate))
+                .onSuccess(() -> assureNotExistsWithSameName(companyToCreate))
                 .onSuccess(() -> internalCreate(companyToCreate));
     }
 
     @Override
     public DomainResult<Company> update(Long id, Company companyToUpdate) {
         return companyToUpdate.validate()
-                .onSuccess(() -> assureNotExists(companyToUpdate))
+                .onSuccess(() -> assureNotExistsWithSameName(companyToUpdate))
                 .onSuccess(() -> internalUpdate(id, companyToUpdate));
+    }
+
+    @Override
+    public DomainResult<Company> delete(Long id) {
+        return assureExists(id)
+                .onSuccess(lastResult -> internalDelete(lastResult.value()));
     }
 
     @Override
@@ -73,22 +75,11 @@ public class CompaniesDomainService implements CompaniesService<Company> {
         return internalUpdate(companyId, company).onSuccessReturnValue();
     }
 
+    private DomainResult<Company> internalUpdate(Long id, Company dataToUpdate) {
+        Company company = this.getById(id).get();
+        BeanUtils.copyProperties(dataToUpdate, company, "id");
 
-    @Override
-    public void delete(Long id) {
-        Company companyToDelete = this.getById(id).get();
-        companyToDelete.setEnabled(false);
-        Company deletedCompany = this.companiesRepository.saveAndFlush(companyToDelete);
-        if (deletedCompany != null) {
-            this.metricsService.registerCompanyUpdated();
-        }
-    }
-
-    private DomainResult<Company> internalUpdate(Long id, Company companyToUpdate) {
-        Company existentCompany = this.getById(id).get();
-        BeanUtils.copyProperties(companyToUpdate, existentCompany, "id");
-
-        Company updatedCompany = this.companiesRepository.saveAndFlush(companyToUpdate);
+        Company updatedCompany = this.companiesRepository.saveAndFlush(dataToUpdate);
         if (updatedCompany != null) {
             this.metricsService.registerCompanyUpdated();
         }
@@ -106,7 +97,27 @@ public class CompaniesDomainService implements CompaniesService<Company> {
         return new DomainResult<>(companyToCreate);
     }
 
-    private DomainResult<Company> assureNotExists(Company someCompany) {
+    private DomainResult<Company> internalDelete(Company companyToDelete) {
+        companyToDelete.setEnabled(false);
+        Company deletedCompany = this.companiesRepository.saveAndFlush(companyToDelete);
+        if (deletedCompany != null) {
+            this.metricsService.registerCompanyUpdated();
+        }
+        return new DomainResult<>(deletedCompany);
+    }
+
+    private DomainResult<Company> assureExists(Long id) {
+        Company company = this.getById(id).get();
+
+        if (company == null) {
+            String error = ErrorMessagesResult.CompanyDoesNotExists(id);
+            return new DomainResult<>(null, false, error);
+        }
+
+        return new DomainResult<>(company);
+    }
+
+    private DomainResult<Company> assureNotExistsWithSameName(Company someCompany) {
         Company alreadyExistentCompany = this.companiesRepository.findByName(someCompany.getName());
 
         if (alreadyExistentCompany != null && !alreadyExistentCompany.getId().equals(someCompany.getId())) {

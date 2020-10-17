@@ -1,6 +1,7 @@
 package com.tghcastro.gullveig.companies.service.domain.results;
 
 import com.tghcastro.gullveig.companies.service.domain.DomainAction;
+import com.tghcastro.gullveig.companies.service.domain.DomainActionParameterized;
 
 public class DomainResult<T> {
     private final T value;
@@ -42,6 +43,13 @@ public class DomainResult<T> {
         return this;
     }
 
+    public DomainResult<T> onSuccess(DomainActionParameterized<T> action) {
+        if (this.succeeded()) {
+            return action.execute(this);
+        }
+        return this;
+    }
+
     public DomainResult<T> onFailure(DomainAction<T> action) {
         if (this.failed()) {
             return action.execute();
@@ -58,5 +66,9 @@ public class DomainResult<T> {
 
     public String error() {
         return errorMessage;
+    }
+
+    public T value() {
+        return value;
     }
 }

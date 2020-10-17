@@ -9,4 +9,9 @@ public final class ErrorMessagesResult {
                 alreadyExistentCompany.getName(),
                 alreadyExistentCompany.getId());
     }
+
+    public static String CompanyDoesNotExists(Long companyId) {
+        String message = "A company with the id [%s] does not exists.";
+        return String.format(message, companyId);
+    }
 }
