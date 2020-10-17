@@ -8,6 +8,8 @@ import com.tghcastro.gullveig.companies.service.domain.interfaces.repositories.S
 import com.tghcastro.gullveig.companies.service.domain.interfaces.services.CompaniesService;
 import com.tghcastro.gullveig.companies.service.domain.models.Company;
 import com.tghcastro.gullveig.companies.service.domain.models.Stock;
+import com.tghcastro.gullveig.companies.service.domain.results.DomainResult;
+import com.tghcastro.gullveig.companies.service.domain.results.ErrorMessagesResult;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -51,20 +53,10 @@ public class CompaniesDomainService implements CompaniesService {
     }
 
     @Override
-    public Company create(Company companyToCreate) {
-        companyToCreate.validate();
-        Company alreadyExistentCompany = this.companiesRepository.findByName(companyToCreate.getName());
-
-        if (alreadyExistentCompany != null) {
-            throw new DuplicatedCompanyNameException(alreadyExistentCompany, companyToCreate);
-        }
-
-        Company createdCompany = this.companiesRepository.saveAndFlush(companyToCreate);
-
-        if (createdCompany != null) {
-            this.metricsService.registerCompanyCreated();
-        }
-        return createdCompany;
+    public DomainResult create(Company companyToCreate) {
+        return companyToCreate.validate()
+                .onSuccess(() -> notAlreadyExists(companyToCreate))
+                .onSuccess(() -> internalCreate(companyToCreate));
     }
 
     @Override
@@ -105,5 +97,26 @@ public class CompaniesDomainService implements CompaniesService {
             this.metricsService.registerCompanyUpdated();
         }
         return updatedCompany;
+    }
+
+    private DomainResult internalCreate(Company companyToCreate) {
+        Company createdCompany = this.companiesRepository.saveAndFlush(companyToCreate);
+
+        if (createdCompany != null) {
+            this.metricsService.registerCompanyCreated();
+        }
+
+        return DomainResult.Ok(createdCompany);
+    }
+
+    private DomainResult notAlreadyExists(Company someCompany) {
+        Company alreadyExistentCompany = this.companiesRepository.findByName(someCompany.getName());
+
+        if (alreadyExistentCompany != null) {
+            String error = ErrorMessagesResult.DuplicatedCompany(someCompany, alreadyExistentCompany);
+            return DomainResult.error(someCompany, error);
+        }
+
+        return DomainResult.Ok(someCompany);
     }
 }

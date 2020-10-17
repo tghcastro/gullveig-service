@@ -30,7 +30,7 @@ public class CompaniesController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Company create(@Valid @RequestBody Company company) {
-        return companiesService.create(company);
+        return (Company) companiesService.create(company).onSuccessReturnValue();
     }
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)

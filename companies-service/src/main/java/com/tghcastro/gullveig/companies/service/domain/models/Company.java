@@ -3,6 +3,8 @@ package com.tghcastro.gullveig.companies.service.domain.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.tghcastro.gullveig.companies.service.domain.exceptions.DomainErrorCode;
 import com.tghcastro.gullveig.companies.service.domain.exceptions.DomainException;
+import com.tghcastro.gullveig.companies.service.domain.results.DomainResult;
+import com.tghcastro.gullveig.companies.service.domain.results.DomainResultSuccess;
 import io.micrometer.core.instrument.util.StringUtils;
 
 import javax.persistence.*;
@@ -98,14 +100,16 @@ public class Company {
         return Objects.hash(id, name, enabled, sector);
     }
 
-    public void validate() throws DomainException {
+    public DomainResult validate() {
         if (StringUtils.isEmpty(this.name)) {
-            throw new DomainException("Company's name should not be empty", DomainErrorCode.INVALID_COMPANY_DATA);
+            return DomainResult.error(this, "Company's name should not be empty");
         }
         if (this.sector == null) {
-            throw new DomainException("Company's sector should not be null", DomainErrorCode.INVALID_COMPANY_DATA);
+            return DomainResult.error(this, "Company's sector should not be null");
         }
         // TODO: Should I validate name already existent here?
+
+        return new DomainResultSuccess(this);
     }
 
     public void addStock(Stock stock) {

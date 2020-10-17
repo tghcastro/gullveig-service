@@ -4,6 +4,7 @@ import com.tghcastro.gullveig.companies.service.domain.exceptions.CompanyNotFoun
 import com.tghcastro.gullveig.companies.service.domain.exceptions.DomainException;
 import com.tghcastro.gullveig.companies.service.domain.exceptions.DuplicatedCompanyNameException;
 import com.tghcastro.gullveig.companies.service.domain.models.Company;
+import com.tghcastro.gullveig.companies.service.domain.results.DomainResult;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +16,7 @@ public interface CompaniesService {
 
     Optional<Company> getBySectorId(Long id) throws CompanyNotFoundException;
 
-    Company create(Company companyToCreate) throws DomainException;
+    DomainResult create(Company companyToCreate) throws DomainException;
 
     Company update(Long id, Company companyToUpdate) throws CompanyNotFoundException, DuplicatedCompanyNameException;
 
