@@ -1,12 +1,11 @@
 package tests.unit.domain.services;
 
-import com.tghcastro.gullveig.companies.service.domain.exceptions.DomainException;
-import com.tghcastro.gullveig.companies.service.domain.exceptions.DuplicatedCompanyNameException;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.metrics.MetricsService;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.repositories.CompaniesRepository;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.repositories.StocksRepository;
 import com.tghcastro.gullveig.companies.service.domain.models.Company;
 import com.tghcastro.gullveig.companies.service.domain.models.Stock;
+import com.tghcastro.gullveig.companies.service.domain.results.DomainResult;
 import com.tghcastro.gullveig.companies.service.domain.services.CompaniesDomainService;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +14,8 @@ import tests.unit.domain.UnitTestDataHelper;
 
 import java.util.Optional;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -48,33 +49,16 @@ public class CompaniesDomainServiceTests {
     }
 
     @Test
-    public void create_ShouldCreate_WithAssociatedStocks() {
-        Company company = UnitTestDataHelper.companyWithValidDataWithoutStocks();
-        company.addStock("KO");
-        company.addStock("OK");
-        Stock stock1 = company.getStocks().get(0);
-        Stock stock2 = company.getStocks().get(1);
-
-        when(companiesRepository.saveAndFlush(any(Company.class))).thenReturn(company);
-        when(stocksRepository.saveAndFlush(stock1)).thenReturn(stock1);
-        when(stocksRepository.saveAndFlush(stock2)).thenReturn(stock2);
-
-        assertDoesNotThrow(() -> companiesDomainService.create(company));
-
-        assertEquals(2, company.getStocks().size());
-        verify(companiesRepository, times(1)).saveAndFlush(company);
-        verify(stocksRepository, times(2)).saveAndFlush(any(Stock.class));
-        verify(metricsService, times(1)).registerCompanyCreated();
-    }
-
-    @Test
     public void create_ShouldThrowError_WhenAlreadyExistsCompanyWithSame() {
-        Company alreadyExistentCompany = UnitTestDataHelper.companyWithValidDataWithoutStocks();
+        Company alreadyExistentCompany = UnitTestDataHelper.companyWithValidDataWithoutStocks(100);
         Company companyToCreate = UnitTestDataHelper.companyWithValidDataWithoutStocks();
 
         when(companiesRepository.findByName(alreadyExistentCompany.getName())).thenReturn(alreadyExistentCompany);
 
-        assertThrows(DuplicatedCompanyNameException.class, () -> companiesDomainService.create(companyToCreate));
+        DomainResult<Company> result = companiesDomainService.create(companyToCreate);
+
+        assertTrue(result.failed());
+        assertThat(result.error(), containsString("A company with the same name already exists"));
 
         verify(companiesRepository, only()).findByName(alreadyExistentCompany.getName());
         verify(companiesRepository, times(0)).saveAndFlush(any(Company.class));
@@ -91,11 +75,12 @@ public class CompaniesDomainServiceTests {
         when(companiesRepository.saveAndFlush(company)).thenReturn(company);
         when(stocksRepository.saveAndFlush(any(Stock.class))).thenReturn(stock);
 
-        Company updatedCompany = assertDoesNotThrow(() -> companiesDomainService.addStock(
+        DomainResult<Company> result = companiesDomainService.addStock(
                 company.getId(),
-                stock.getTicker()));
+                stock.getTicker());
 
-        assertEquals(company, updatedCompany);
+        assertTrue(result.succeeded());
+        assertEquals(company, result.value());
         verify(companiesRepository, times(1)).findById(company.getId());
         verify(companiesRepository, times(1)).saveAndFlush(company);
     }
@@ -107,9 +92,12 @@ public class CompaniesDomainServiceTests {
 
         when(companiesRepository.findById(company.getId())).thenReturn(Optional.empty());
 
-        assertThrows(DomainException.class, () -> companiesDomainService.addStock(
+        DomainResult<Company> result = companiesDomainService.addStock(
                 company.getId(),
-                stock.getTicker()));
+                stock.getTicker());
+
+        assertTrue(result.failed());
+        assertThat(result.error(), containsString("A company with the id [1] does not exists."));
 
         verify(companiesRepository, times(1)).findById(company.getId());
         verify(companiesRepository, never()).saveAndFlush(company);
@@ -137,12 +125,13 @@ public class CompaniesDomainServiceTests {
 
         when(companiesRepository.findById(companyToUpdate.getId())).thenReturn(Optional.empty());
 
-        assertThrows(DomainException.class,
-                () -> companiesDomainService.update(
-                        companyToUpdate.getId(),
-                        companyToUpdate));
+        DomainResult<Company> result = companiesDomainService.update(companyToUpdate.getId(), companyToUpdate);
 
-        verify(companiesRepository, only()).findById(companyToUpdate.getId());
+        assertTrue(result.failed());
+        assertThat(result.error(), containsString("A company with the id [1] does not exists."));
+
+        verify(companiesRepository, times(1)).findByName(companyToUpdate.getName());
+        verify(companiesRepository, times(1)).findById(companyToUpdate.getId());
         verify(metricsService, never()).registerCompanyUpdated();
     }
 
@@ -156,26 +145,25 @@ public class CompaniesDomainServiceTests {
         when(companiesRepository.findById(companyToUpdate.getId())).thenReturn(Optional.of(companyToUpdate));
         CompaniesDomainService companiesDomainService = new CompaniesDomainService(companiesRepository, stocksRepository, metricsService);
 
-        assertThrows(DuplicatedCompanyNameException.class,
-                () -> companiesDomainService.update(
-                        companyToUpdate.getId(),
-                        companyToUpdate));
+        DomainResult<Company> result = companiesDomainService.update(companyToUpdate.getId(), companyToUpdate);
 
-        verify(companiesRepository, times(1)).findById(companyToUpdate.getId());
-        verify(companiesRepository, times(1)).findByName(alreadyExistentCompany.getName());
+        assertTrue(result.failed());
+        assertThat(result.error(), containsString("A company with the same name already exists"));
+
+        verify(companiesRepository, only()).findByName(alreadyExistentCompany.getName());
         verify(companiesRepository, never()).saveAndFlush(any(Company.class));
         verify(metricsService, never()).registerCompanyUpdated();
     }
 
     @Test
-    public void update_ShouldThrowError_WhenUpdatingACompanyNameToAnInvalidSector() {
+    public void update_ShouldThrowError_WhenUpdatingACompanyToAnInvalidSector() {
         Company companyToUpdate = UnitTestDataHelper.companyWithValidDataWithoutStocks();
         companyToUpdate.setSector(null);
 
-        assertThrows(DomainException.class,
-                () -> companiesDomainService.update(
-                        companyToUpdate.getId(),
-                        companyToUpdate));
+        DomainResult<Company> result = companiesDomainService.update(companyToUpdate.getId(), companyToUpdate);
+
+        assertTrue(result.failed());
+        assertThat(result.error(), containsString("Company's sector should not be null"));
 
         verify(companiesRepository, never()).findById(companyToUpdate.getId());
         verify(companiesRepository, never()).findByName(companyToUpdate.getName());

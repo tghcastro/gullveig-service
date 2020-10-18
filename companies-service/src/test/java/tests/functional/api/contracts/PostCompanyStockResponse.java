@@ -2,7 +2,7 @@ package tests.functional.api.contracts;
 
 import java.util.List;
 
-public class PutCompanyResponse {
+public class PostCompanyStockResponse {
     private String id;
     private String name;
     private boolean enabled;

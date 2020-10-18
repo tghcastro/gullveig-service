@@ -17,3 +17,9 @@ Feature: Companies
     And another existent sector
     When a client tries to update this company to this another sector
     Then the company correctly updated
+
+  Scenario: Successful stocks addition
+    Given an existent company associated with any sector
+    When a client tries to register the stock "ABC"
+    Then stock is added in this company
+    And this company has 1 stock associated

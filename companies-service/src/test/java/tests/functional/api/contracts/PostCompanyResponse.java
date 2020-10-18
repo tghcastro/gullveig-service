@@ -1,10 +1,13 @@
 package tests.functional.api.contracts;
 
+import java.util.List;
+
 public class PostCompanyResponse {
     private String id;
     private String name;
     private boolean enabled;
     private CompanySector sector;
+    private List<CompanyStock> stocks;
 
     public String getName() {
         return name;
@@ -38,6 +41,14 @@ public class PostCompanyResponse {
         this.id = id;
     }
 
+    public List<CompanyStock> getStocks() {
+        return stocks;
+    }
+
+    public void setStocks(List<CompanyStock> stocks) {
+        this.stocks = stocks;
+    }
+
     public static class CompanySector {
         private String id;
         private String name;
@@ -65,6 +76,27 @@ public class PostCompanyResponse {
 
         public void setEnabled(boolean enabled) {
             this.enabled = enabled;
+        }
+    }
+
+    public static class CompanyStock {
+        private String id;
+        private String ticker;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getTicker() {
+            return ticker;
+        }
+
+        public void setTicker(String ticker) {
+            this.ticker = ticker;
         }
     }
 }

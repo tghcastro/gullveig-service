@@ -6,14 +6,10 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import tests.functional.CompaniesServiceAdministrator;
 import tests.functional.ScenarioDataContext;
-import tests.functional.api.contracts.PostCompanyRequest;
-import tests.functional.api.contracts.PostCompanyResponse;
-import tests.functional.api.contracts.PostSectorResponse;
-import tests.functional.api.contracts.PutCompanyResponse;
+import tests.functional.api.contracts.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 
 public class CompaniesSteps {
     private final ScenarioDataContext scenarioDataContext;
@@ -59,13 +55,21 @@ public class CompaniesSteps {
     @When("a client tries to update this company name")
     public void aClientTriesToUpdateThisCompanyName() {
         PostCompanyResponse companyToUpdate = scenarioDataContext.get("createdCompany");
-        companyToUpdate.setName("NEW " + System.currentTimeMillis());
+        String newName = "NEW " + System.currentTimeMillis();
+        companyToUpdate.setName(newName);
         PutCompanyResponse updatedCompany = companiesServiceAdministrator.updateCompany(companyToUpdate);
+        scenarioDataContext.put("companyToUpdate", companyToUpdate);
         scenarioDataContext.put("updatedCompany", updatedCompany);
     }
 
     @Then("the company correctly updated")
     public void theCompanyCorrectlyUpdated() {
+        PostCompanyResponse companyToUpdate = scenarioDataContext.get("companyToUpdate");
+        PutCompanyResponse updatedCompany = scenarioDataContext.get("updatedCompany");
+        assertThat(updatedCompany.getId(), is(companyToUpdate.getId()));
+        assertThat(updatedCompany.getName(), is(companyToUpdate.getName()));
+        assertThat(updatedCompany.getSector().getId(), is(companyToUpdate.getSector().getId()));
+        assertThat(updatedCompany.getStocks().size(), is(companyToUpdate.getStocks().size()));
     }
 
     @When("a client tries to update this company to this another sector")
@@ -77,5 +81,30 @@ public class CompaniesSteps {
         companyToUpdate.setSector(sector);
         PutCompanyResponse updatedCompany = companiesServiceAdministrator.updateCompany(companyToUpdate);
         scenarioDataContext.put("updatedCompany", updatedCompany);
+        scenarioDataContext.put("companyToUpdate", companyToUpdate);
+    }
+
+    @When("a client tries to register the stock {string}")
+    public void aClientTriesToRegisterTheStock(String ticker) {
+        PostCompanyResponse companyResponse = scenarioDataContext.get("createdCompany");
+        PostCompanyStockResponse postCompanyStockResponse = companiesServiceAdministrator.addStock(companyResponse.getId(), ticker);
+        scenarioDataContext.put("companyWithStockAdded", postCompanyStockResponse);
+        scenarioDataContext.put("stockTickerAdded", ticker);
+    }
+
+    @Then("stock is added in this company")
+    public void stockIsAddedInThisCompany() {
+        PostCompanyStockResponse postCompanyStockResponse = scenarioDataContext.get("companyWithStockAdded");
+        String ticker = scenarioDataContext.get("stockTickerAdded");
+        assertThat(postCompanyStockResponse.getStocks().size(), is(greaterThan(0)));
+        assertThat(postCompanyStockResponse.getStocks().get(0).getTicker(), is(ticker));
+    }
+
+    @And("this company has {int} stock associated")
+    public void thisCompanyHasStockAssociated(int numberOfStocks) {
+        PostCompanyStockResponse postCompanyStockResponse = scenarioDataContext.get("companyWithStockAdded");
+        String ticker = scenarioDataContext.get("stockTickerAdded");
+        assertThat(postCompanyStockResponse.getStocks().size(), is(numberOfStocks));
+        assertThat(postCompanyStockResponse.getStocks().get(0).getTicker(), is(ticker));
     }
 }

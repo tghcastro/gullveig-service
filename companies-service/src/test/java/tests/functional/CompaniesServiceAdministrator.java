@@ -63,4 +63,9 @@ public class CompaniesServiceAdministrator {
     public PostCompanyResponse createValidCompany(String sectorId) {
         return this.createCompany(this.GetCompanyInstanceWithValidData(sectorId));
     }
+
+    public PostCompanyStockResponse addStock(String id, String ticker) {
+        System.out.println("Adding a stock");
+        return this.companiesServiceClient.addStock(id, ticker);
+    }
 }

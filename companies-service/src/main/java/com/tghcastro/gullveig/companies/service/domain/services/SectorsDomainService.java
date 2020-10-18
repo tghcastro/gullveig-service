@@ -1,6 +1,5 @@
 package com.tghcastro.gullveig.companies.service.domain.services;
 
-import com.tghcastro.gullveig.companies.service.domain.exceptions.DomainException;
 import com.tghcastro.gullveig.companies.service.domain.exceptions.SectorAlreadyExistentException;
 import com.tghcastro.gullveig.companies.service.domain.exceptions.SectorInUseException;
 import com.tghcastro.gullveig.companies.service.domain.exceptions.SectorNotFoundException;
@@ -8,6 +7,7 @@ import com.tghcastro.gullveig.companies.service.domain.interfaces.metrics.Metric
 import com.tghcastro.gullveig.companies.service.domain.interfaces.repositories.SectorsRepository;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.services.CompaniesService;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.services.SectorsService;
+import com.tghcastro.gullveig.companies.service.domain.models.Company;
 import com.tghcastro.gullveig.companies.service.domain.models.Sector;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -18,10 +18,10 @@ import java.util.List;
 public class SectorsDomainService implements SectorsService {
 
     private final SectorsRepository sectorsRepository;
-    private final CompaniesService companiesService;
+    private final CompaniesService<Company> companiesService;
     private final MetricsService metricsService;
 
-    public SectorsDomainService(SectorsRepository sectorsRepository, CompaniesService companiesService, MetricsService metricsService) {
+    public SectorsDomainService(SectorsRepository sectorsRepository, CompaniesService<Company> companiesService, MetricsService metricsService) {
         this.sectorsRepository = sectorsRepository;
         this.companiesService = companiesService;
         this.metricsService = metricsService;
@@ -56,7 +56,7 @@ public class SectorsDomainService implements SectorsService {
     }
 
     @Override
-    public void delete(Long id) throws DomainException {
+    public void delete(Long id) {
         Sector sectorToDelete = this.getById(id);
 
         this.companiesService.getBySectorId(id)

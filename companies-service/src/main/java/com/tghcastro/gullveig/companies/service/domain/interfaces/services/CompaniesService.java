@@ -1,25 +1,23 @@
 package com.tghcastro.gullveig.companies.service.domain.interfaces.services;
 
-import com.tghcastro.gullveig.companies.service.domain.exceptions.CompanyNotFoundException;
-import com.tghcastro.gullveig.companies.service.domain.exceptions.DomainException;
-import com.tghcastro.gullveig.companies.service.domain.exceptions.DuplicatedCompanyNameException;
 import com.tghcastro.gullveig.companies.service.domain.models.Company;
+import com.tghcastro.gullveig.companies.service.domain.results.DomainResult;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface CompaniesService {
+public interface CompaniesService<T> {
     List<Company> getAll();
 
-    Optional<Company> getById(Long id) throws CompanyNotFoundException;
+    Optional<T> getById(Long id);
 
-    Optional<Company> getBySectorId(Long id) throws CompanyNotFoundException;
+    Optional<T> getBySectorId(Long id);
 
-    Company create(Company companyToCreate) throws DomainException;
+    DomainResult<T> create(Company companyToCreate);
 
-    Company update(Long id, Company companyToUpdate) throws CompanyNotFoundException, DuplicatedCompanyNameException;
+    DomainResult<T> update(Long id, Company companyToUpdate);
 
-    void delete(Long id) throws DomainException;
+    DomainResult<T> delete(Long id);
 
-    Company addStock(Long companyId, String ticker);
+    DomainResult<T> addStock(Long companyId, String ticker);
 }

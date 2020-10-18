@@ -1,13 +1,13 @@
 package com.tghcastro.gullveig.companies.service.domain.services;
 
-import com.tghcastro.gullveig.companies.service.domain.exceptions.CompanyNotFoundException;
-import com.tghcastro.gullveig.companies.service.domain.exceptions.DuplicatedCompanyNameException;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.metrics.MetricsService;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.repositories.CompaniesRepository;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.repositories.StocksRepository;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.services.CompaniesService;
 import com.tghcastro.gullveig.companies.service.domain.models.Company;
 import com.tghcastro.gullveig.companies.service.domain.models.Stock;
+import com.tghcastro.gullveig.companies.service.domain.results.DomainResult;
+import com.tghcastro.gullveig.companies.service.domain.results.ErrorMessagesResult;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CompaniesDomainService implements CompaniesService {
+public class CompaniesDomainService implements CompaniesService<Company> {
 
     private final CompaniesRepository companiesRepository;
     private final StocksRepository stocksRepository;
@@ -34,78 +34,105 @@ public class CompaniesDomainService implements CompaniesService {
 
     @Override
     public Optional<Company> getById(Long id) {
-        Optional<Company> foundCompany = this.companiesRepository.findById(id);
-        if (!foundCompany.isPresent()) {
-            throw new CompanyNotFoundException(id);
-        }
-        return foundCompany;
+        return this.companiesRepository.findById(id);
     }
 
     @Override
     public Optional<Company> getBySectorId(Long sectorId) {
-        Optional<Company> foundCompany = this.companiesRepository.findBySectorId(sectorId);
-        if (!foundCompany.isPresent()) {
-            return Optional.empty();
-        }
-        return foundCompany;
+        return this.companiesRepository.findBySectorId(sectorId);
     }
 
     @Override
-    public Company create(Company companyToCreate) {
-        companyToCreate.validate();
-        Company alreadyExistentCompany = this.companiesRepository.findByName(companyToCreate.getName());
+    public DomainResult<Company> create(Company companyToCreate) {
+        return companyToCreate.validate()
+                .onSuccess(() -> assureNotExistsWithSameName(companyToCreate))
+                .onSuccess(() -> internalCreate(companyToCreate));
+    }
 
-        if (alreadyExistentCompany != null) {
-            throw new DuplicatedCompanyNameException(alreadyExistentCompany, companyToCreate);
+    @Override
+    public DomainResult<Company> update(Long id, Company companyToUpdate) {
+        return companyToUpdate.validate()
+                .onSuccess(() -> assureNotExistsWithSameName(companyToUpdate))
+                .onSuccess(() -> assureExists(id))
+                .onSuccess(lastResult -> {
+                    BeanUtils.copyProperties(companyToUpdate, lastResult.value(), "id");
+                    return internalUpdate(lastResult.value());
+                });
+    }
+
+    @Override
+    public DomainResult<Company> delete(Long id) {
+        return assureExists(id)
+                .onSuccess(lastResult -> internalDelete(lastResult.value()));
+    }
+
+    @Override
+    public DomainResult<Company> addStock(Long companyId, String ticker) {
+        return assureExists(companyId).onSuccess(lastResult -> {
+            Stock stock = new Stock(ticker);
+            return lastResult.value().addStock(this.stocksRepository.saveAndFlush(stock)).onSuccess(
+                    () -> internalUpdate(lastResult.value()));
+        });
+    }
+
+    private DomainResult<Company> internalUpdate(Company companyToUpdate) {
+        Company updatedCompany = this.companiesRepository.saveAndFlush(companyToUpdate);
+        if (updatedCompany != null) {
+            this.metricsService.registerCompanyUpdated();
         }
 
-        Company createdCompany = this.companiesRepository.saveAndFlush(companyToCreate);
+        return new DomainResult<>(updatedCompany);
+    }
 
-        companyToCreate.getStocks().forEach(this.stocksRepository::saveAndFlush);
+    private DomainResult<Company> internalCreate(Company companyToCreate) {
+        Company createdCompany = this.companiesRepository.saveAndFlush(companyToCreate);
 
         if (createdCompany != null) {
             this.metricsService.registerCompanyCreated();
         }
-        return createdCompany;
+
+        return new DomainResult<>(companyToCreate);
     }
 
-    @Override
-    public Company addStock(Long companyId, String ticker) {
-        Company company = this.getById(companyId).get();
-        Stock stock = new Stock(ticker);
-        company.addStock(this.stocksRepository.saveAndFlush(stock));
-        return internalUpdate(company);
-    }
-
-    @Override
-    public Company update(Long id, Company companyToUpdate) {
-        companyToUpdate.validate();
-        Company existentCompany = this.getById(id).get();
-        BeanUtils.copyProperties(companyToUpdate, existentCompany, "id");
-        return internalUpdate(existentCompany);
-    }
-
-    @Override
-    public void delete(Long id) {
-        Company companyToDelete = this.getById(id).get();
+    private DomainResult<Company> internalDelete(Company companyToDelete) {
         companyToDelete.setEnabled(false);
         Company deletedCompany = this.companiesRepository.saveAndFlush(companyToDelete);
         if (deletedCompany != null) {
             this.metricsService.registerCompanyUpdated();
         }
+        return new DomainResult<>(deletedCompany);
     }
 
-    private Company internalUpdate(Company companyToUpdate) {
-        Company alreadyExistentCompany = this.companiesRepository.findByName(companyToUpdate.getName());
+    private DomainResult<Company> assureExists(Long id) {
+        Company company = this.getById(id).orElse(null);
 
-        if (alreadyExistentCompany != null && !alreadyExistentCompany.getId().equals(companyToUpdate.getId())) {
-            throw new DuplicatedCompanyNameException(alreadyExistentCompany, companyToUpdate);
+        if (company == null) {
+            String error = ErrorMessagesResult.CompanyDoesNotExists(id);
+            return new DomainResult<>(null, false, error);
         }
 
-        Company updatedCompany = this.companiesRepository.saveAndFlush(companyToUpdate);
-        if (updatedCompany != null) {
-            this.metricsService.registerCompanyUpdated();
+        return new DomainResult<>(company);
+    }
+
+    private DomainResult<Company> assureNotExists(Long id) {
+        Company company = this.getById(id).orElse(null);
+
+        if (company != null) {
+            String error = ErrorMessagesResult.CompanyDoesNotExists(id);
+            return new DomainResult<>(null, false, error);
         }
-        return updatedCompany;
+
+        return new DomainResult<>(company);
+    }
+
+    private DomainResult<Company> assureNotExistsWithSameName(Company someCompany) {
+        Company alreadyExistentCompany = this.companiesRepository.findByName(someCompany.getName());
+
+        if (alreadyExistentCompany != null && !alreadyExistentCompany.getId().equals(someCompany.getId())) {
+            String error = ErrorMessagesResult.DuplicatedCompany(someCompany, alreadyExistentCompany);
+            return new DomainResult<>(someCompany, false, error);
+        }
+
+        return new DomainResult<>(someCompany);
     }
 }
