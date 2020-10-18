@@ -1,8 +1,6 @@
 package com.tghcastro.gullveig.companies.service.domain.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.tghcastro.gullveig.companies.service.domain.exceptions.DomainErrorCode;
-import com.tghcastro.gullveig.companies.service.domain.exceptions.DomainException;
 import com.tghcastro.gullveig.companies.service.domain.results.DomainResult;
 import io.micrometer.core.instrument.util.StringUtils;
 
@@ -107,20 +105,20 @@ public class Company {
             return new DomainResult<>(this, false, "Company's sector should not be null");
 
         }
-        // TODO: Should I validate name already existent here?
 
         return new DomainResult<>(this, true, null);
     }
 
-    public void addStock(Stock stock) {
+    public DomainResult<Company> addStock(Stock stock) {
         if (StringUtils.isEmpty(stock.getTicker())) {
-            throw new DomainException("Company's ticker should not be empty", DomainErrorCode.INVALID_COMPANY_DATA);
+            return new DomainResult<>(this, false, "Company's ticker should not be empty");
         }
         this.stocks.add(stock);
-        // TODO: Should I validate if the ticker already exists?
+
+        return new DomainResult<>(this, true, null);
     }
 
-    public void addStock(String ticker) {
-        this.addStock(new Stock(ticker));
+    public DomainResult<Company> addStock(String ticker) {
+        return this.addStock(new Stock(ticker));
     }
 }

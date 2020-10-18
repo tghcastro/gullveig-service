@@ -1,6 +1,5 @@
 package com.tghcastro.gullveig.companies.service.application.controllers;
 
-import com.tghcastro.gullveig.companies.service.domain.exceptions.DomainException;
 import com.tghcastro.gullveig.companies.service.domain.interfaces.services.CompaniesService;
 import com.tghcastro.gullveig.companies.service.domain.models.Company;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,7 @@ public class CompaniesController {
 
     @GetMapping
     @RequestMapping("{id}")
-    public Company get(@PathVariable Long id) throws DomainException {
+    public Company get(@PathVariable Long id) {
         return companiesService.getById(id).get();
     }
 
@@ -35,7 +34,7 @@ public class CompaniesController {
 
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) throws DomainException {
+    public void delete(@PathVariable Long id) {
         companiesService.delete(id);
     }
 

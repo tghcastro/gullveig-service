@@ -70,8 +70,8 @@ public class CompaniesDomainService implements CompaniesService<Company> {
     public DomainResult<Company> addStock(Long companyId, String ticker) {
         return assureExists(companyId).onSuccess(lastResult -> {
             Stock stock = new Stock(ticker);
-            lastResult.value().addStock(this.stocksRepository.saveAndFlush(stock));
-            return internalUpdate(lastResult.value());
+            return lastResult.value().addStock(this.stocksRepository.saveAndFlush(stock)).onSuccess(
+                    () -> internalUpdate(lastResult.value()));
         });
     }
 

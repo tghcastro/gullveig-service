@@ -1,6 +1,5 @@
 package com.tghcastro.gullveig.companies.service.domain.services;
 
-import com.tghcastro.gullveig.companies.service.domain.exceptions.DomainException;
 import com.tghcastro.gullveig.companies.service.domain.exceptions.SectorAlreadyExistentException;
 import com.tghcastro.gullveig.companies.service.domain.exceptions.SectorInUseException;
 import com.tghcastro.gullveig.companies.service.domain.exceptions.SectorNotFoundException;
@@ -57,7 +56,7 @@ public class SectorsDomainService implements SectorsService {
     }
 
     @Override
-    public void delete(Long id) throws DomainException {
+    public void delete(Long id) {
         Sector sectorToDelete = this.getById(id);
 
         this.companiesService.getBySectorId(id)
