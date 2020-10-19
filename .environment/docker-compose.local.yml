@@ -30,7 +30,3 @@ services:
 networks:
   local-network:
     driver: bridge
-
-volumes:
-  prometheus_data: {}
-  grafana_data: {}
