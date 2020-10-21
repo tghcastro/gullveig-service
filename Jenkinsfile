@@ -4,15 +4,25 @@ pipeline {
     triggers {
         pollSCM '* * * * *'
     }
+
     stages {
-        stage('Build') {
+
+        stage('Clone') {
             steps {
-                sh './gradlew assemble'
+                git 'https://github.com/tghcastro/gullveig-service.git'
             }
         }
+
+        stage('Build') {
+            steps {
+                sh './gradlew clean build'
+            }
+        }
+
         stage('Test') {
             steps {
                 sh './gradlew test'
+                junit '**/build/test-results/test/TEST-*.xml'
             }
         }
     }
