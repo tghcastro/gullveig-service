@@ -2,7 +2,7 @@ plugins {
     id "java"
     id "org.springframework.boot" version "${springBootVersion}"
     id "io.spring.dependency-management"
-    id "com.palantir.docker" version "0.22.1"
+    id "com.palantir.docker" version "0.25.0"
 }
 
 group = "${serviceGroup}"
