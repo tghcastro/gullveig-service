@@ -42,18 +42,20 @@ task wrapper(type: Wrapper) {
 }
 
 bootJar {
-    enabled = false
+    enabled = true
+    mainClassName = 'com.tghcastro.gullveig.operations.service.OperationsServiceApplication'
 }
 
-mainClassName = 'com.tghcastro.gullveig.operations.service.OperationsServiceApplication'
 
 jar {
-    enabled = true
+    enabled = false
     manifest {
         attributes 'Main-Class': 'com.tghcastro.gullveig.operations.service.OperationsServiceApplication'
     }
     from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
 }
+
+
 
 compileKotlin {
     kotlinOptions.jvmTarget = sourceCompatibility
