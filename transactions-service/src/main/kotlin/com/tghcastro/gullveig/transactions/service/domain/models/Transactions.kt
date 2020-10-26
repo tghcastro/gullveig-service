@@ -3,6 +3,7 @@ package com.tghcastro.gullveig.transactions.service.domain.models
 import java.util.*
 
 class Transactions(
+        var id: Long?,
         var ticker: String,
         var date: Date,
         var costs: Double,

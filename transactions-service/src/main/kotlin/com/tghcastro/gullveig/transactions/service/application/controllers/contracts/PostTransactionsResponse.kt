@@ -3,6 +3,7 @@ package com.tghcastro.gullveig.transactions.service.application.controllers.cont
 import java.util.*
 
 class PostTransactionsResponse(
+        val id: Long?,
         val ticker: String,
         val type: TransactionType,
         val date: Date,

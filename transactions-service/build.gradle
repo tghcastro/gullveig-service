@@ -24,7 +24,9 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}"
     runtimeOnly "org.postgresql:postgresql:${postgresSqlVersion}"
     runtimeOnly "com.h2database:h2:${h2DbVersion}"
-    testCompile('org.springframework.boot:spring-boot-starter-test')
+    testImplementation(enforcedPlatform("org.junit:junit-bom:${junitJupiterVersion}"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testCompile "org.mockito:mockito-core:${mockitoVersion}"
 }
 
 apply plugin: 'kotlin'
@@ -55,7 +57,9 @@ jar {
     from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
-
+test {
+    useJUnitPlatform()
+}
 
 compileKotlin {
     kotlinOptions.jvmTarget = sourceCompatibility
