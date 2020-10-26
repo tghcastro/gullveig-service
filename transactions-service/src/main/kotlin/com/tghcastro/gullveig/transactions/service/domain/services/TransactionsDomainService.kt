@@ -1,8 +1,8 @@
-package com.tghcastro.gullveig.operations.service.domain.services
+package com.tghcastro.gullveig.transactions.service.domain.services
 
-import com.tghcastro.gullveig.operations.service.domain.interfaces.TransactionsService
-import com.tghcastro.gullveig.operations.service.domain.models.DomainTransactionType
-import com.tghcastro.gullveig.operations.service.domain.models.Transactions
+import com.tghcastro.gullveig.transactions.service.domain.interfaces.TransactionsService
+import com.tghcastro.gullveig.transactions.service.domain.models.DomainTransactionType
+import com.tghcastro.gullveig.transactions.service.domain.models.Transactions
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.util.*

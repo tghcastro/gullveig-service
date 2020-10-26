@@ -1,4 +1,4 @@
-package com.tghcastro.gullveig.operations.service.application.controllers.contracts
+package com.tghcastro.gullveig.transactions.service.application.controllers.contracts
 
 import java.util.*
 
@@ -11,6 +11,4 @@ data class PostTransactionsRequest(
         val costs: Double,
         val currencyCode: String,
         val tags: List<String>
-) {
-
-}
+)

@@ -43,14 +43,14 @@ task wrapper(type: Wrapper) {
 
 bootJar {
     enabled = true
-    mainClassName = 'com.tghcastro.gullveig.operations.service.OperationsServiceApplication'
+    mainClassName = 'com.tghcastro.gullveig.transactions.service.TransactionsServiceApplication'
 }
 
 
 jar {
     enabled = false
     manifest {
-        attributes 'Main-Class': 'com.tghcastro.gullveig.operations.service.OperationsServiceApplication'
+        attributes 'Main-Class': 'com.tghcastro.gullveig.transactions.service.TransactionsServiceApplication'
     }
     from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
 }

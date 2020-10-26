@@ -1,4 +1,4 @@
-package com.tghcastro.gullveig.operations.service.application.controllers.contracts
+package com.tghcastro.gullveig.transactions.service.application.controllers.contracts
 
 import java.util.*
 
@@ -11,6 +11,4 @@ class GetTransactionsResponse(
         var tags: List<String>,
         var type: TransactionType,
         var units: Double
-) {
-
-}
+)

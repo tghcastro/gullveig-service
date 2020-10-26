@@ -33,7 +33,7 @@ docker run -p 8090:8090 -e SPRING_PROFILES_ACTIVE=local --name stocks-service gu
 ```
 
 
-### Operations Service
+### Transactions Service
 
 Running Port: 8070
 
@@ -41,10 +41,10 @@ Running Port: 8070
 
 - Running Application
 ```shell
-java -jar ./operations-service/build/libs/operations-service-0.0.1.SNAPSHOT.jar 
+java -jar ./transactions-service/build/libs/transactions-service-0.0.1.SNAPSHOT.jar 
 
-docker build -t gullveig/operations-service -f ./operations-service/Dockerfile .
-docker run -p 8070:8070 -e SPRING_PROFILES_ACTIVE=local --name operations-service gullveig/operations-service
+docker build -t gullveig/transactions-service -f ./transactions-service/Dockerfile .
+docker run -p 8070:8070 -e SPRING_PROFILES_ACTIVE=local --name transactions-service gullveig/transactions-service
 ```
 
 ## All Environment Commands

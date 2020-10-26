@@ -1,4 +1,4 @@
-package com.tghcastro.gullveig.operations.service.domain.models
+package com.tghcastro.gullveig.transactions.service.domain.models
 
 import java.util.*
 
@@ -11,5 +11,4 @@ class Transactions(
         var tags: List<String>,
         var type: DomainTransactionType,
         var units: Double
-) {
-}
+)
