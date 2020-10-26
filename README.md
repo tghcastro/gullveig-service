@@ -32,6 +32,21 @@ docker build -t gullveig/stocks-service -f ./stocks-service/Dockerfile .
 docker run -p 8090:8090 -e SPRING_PROFILES_ACTIVE=local --name stocks-service gullveig/stocks-service
 ```
 
+
+### Operations Service
+
+Running Port: 8070
+
+#### Commands
+
+- Running Application
+```shell
+java -jar ./operations-service/build/libs/operations-service-0.0.1.SNAPSHOT.jar 
+
+docker build -t gullveig/operations-service -f ./operations-service/Dockerfile .
+docker run -p 8070:8070 -e SPRING_PROFILES_ACTIVE=local --name operations-service gullveig/operations-service
+```
+
 ## All Environment Commands
 
 ```shell script

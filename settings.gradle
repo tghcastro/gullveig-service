@@ -5,4 +5,5 @@
 rootProject.name = 'gullveig-service'
 include 'companies-service'
 include 'stocks-service'
+include 'operations-service'
 
