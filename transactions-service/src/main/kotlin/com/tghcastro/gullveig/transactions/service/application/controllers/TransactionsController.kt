@@ -25,6 +25,7 @@ class TransactionsController(
     @GetMapping
     @RequestMapping("{id}")
     fun getOperation(@PathVariable id: Long): GetTransactionsResponse {
-        return TransactionsApiMapper.toGetTransactionResponse(this.transactionsService.getTransaction(id))
+        val gottenTransaction = this.transactionsService.getById(id) ?: throw Exception("not found")
+        return TransactionsApiMapper.toGetTransactionResponse(gottenTransaction)
     }
 }

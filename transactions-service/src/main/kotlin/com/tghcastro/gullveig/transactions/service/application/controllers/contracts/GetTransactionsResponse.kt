@@ -10,5 +10,6 @@ class GetTransactionsResponse(
         var price: Double,
         var tags: List<String>,
         var type: TransactionType,
-        var units: Double
+        var units: Double,
+        var id: Long
 )

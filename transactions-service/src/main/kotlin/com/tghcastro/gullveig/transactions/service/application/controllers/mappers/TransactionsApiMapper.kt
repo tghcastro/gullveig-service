@@ -18,12 +18,14 @@ class TransactionsApiMapper {
                     price = transactionRequest.price,
                     tags = transactionRequest.tags,
                     type = toDomainTransactionType(transactionRequest.type),
-                    units = transactionRequest.units
+                    units = transactionRequest.units,
+                    id = null
             )
         }
 
         fun toPostTransactionResponse(createdTransaction: Transactions): PostTransactionsResponse {
             return PostTransactionsResponse(
+                    id = createdTransaction.id,
                     ticker = createdTransaction.ticker,
                     date = createdTransaction.date,
                     costs = createdTransaction.costs,
@@ -37,6 +39,7 @@ class TransactionsApiMapper {
 
         fun toGetTransactionResponse(transaction: Transactions): GetTransactionsResponse {
             return GetTransactionsResponse(
+                    id = transaction.id!!,
                     ticker = transaction.ticker,
                     date = transaction.date,
                     costs = transaction.costs,
@@ -52,7 +55,6 @@ class TransactionsApiMapper {
             return when(type) {
                 TransactionType.BUY -> DomainTransactionType.BUY
                 TransactionType.SELL -> DomainTransactionType.SELL
-                else -> throw Exception("Unexpected transaction type. $type")
             }
         }
 
@@ -60,7 +62,6 @@ class TransactionsApiMapper {
             return when(type) {
                 DomainTransactionType.BUY -> TransactionType.BUY
                 DomainTransactionType.SELL -> TransactionType.SELL
-                else -> throw Exception("Unexpected domain transaction type. $type")
             }
         }
     }
