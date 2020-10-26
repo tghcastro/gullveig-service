@@ -1,14 +1,30 @@
 package com.tghcastro.gullveig.operations.service.application.controllers
 
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import com.tghcastro.gullveig.operations.service.application.controllers.contracts.GetTransactionsResponse
+import com.tghcastro.gullveig.operations.service.application.controllers.contracts.PostTransactionsRequest
+import com.tghcastro.gullveig.operations.service.application.controllers.contracts.PostTransactionsResponse
+import com.tghcastro.gullveig.operations.service.application.controllers.mappers.TransactionsApiMapper
+import com.tghcastro.gullveig.operations.service.domain.interfaces.TransactionsService
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.*
+import javax.validation.Valid
 
 @RestController
-class OperationsController {
+@RequestMapping("api/v1/transactions")
+class OperationsController(
+        @Autowired private val transactionsService: TransactionsService) {
 
-    @GetMapping("/test")
-    fun test(@RequestParam(value = "name", defaultValue = "World") name: String): String {
-        return "test $name"
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    fun createOperation(@Valid @RequestBody requestBody: PostTransactionsRequest): PostTransactionsResponse {
+        val createdTransaction = this.transactionsService.createTransaction(TransactionsApiMapper.toTransactionModel(requestBody))
+        return TransactionsApiMapper.toPostTransactionResponse(createdTransaction)
+    }
+
+    @GetMapping
+    @RequestMapping("{id}")
+    fun getOperation(@PathVariable id: Long): GetTransactionsResponse {
+        return TransactionsApiMapper.toGetTransactionResponse(this.transactionsService.getTransaction(id))
     }
 }
