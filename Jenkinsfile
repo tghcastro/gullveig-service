@@ -9,20 +9,40 @@ pipeline {
 
         stage('Clone') {
             steps {
+                echo 'Cloning GitHub Repository ================================'
                 git 'https://github.com/tghcastro/gullveig-service.git'
             }
         }
 
-        stage('Build') {
+        stage('Build Services') {
             steps {
+                echo 'All Services Build and Run Unit Tests ====================='
                 sh './gradlew clean build'
+                junit '**/build/test-results/test/TEST-*.xml'
             }
         }
 
-        stage('Test') {
+        stage('Build Images (TODO)') {
             steps {
-                sh './gradlew test'
-                junit '**/build/test-results/test/TEST-*.xml'
+                echo 'Build Docker Images ======================================'
+            }
+        }
+
+        stage('Functional Tests (TODO)') {
+            steps {
+                echo 'Run Functional Tests Against Test Environment ============'
+            }
+        }
+
+        stage('Performance Tests (TODO)') {
+            steps {
+                echo 'Run Performance Tests Against Test Environment ==========='
+            }
+        }
+
+        stage('Publish PROD Images (TODO)') {
+            steps {
+                echo 'Publish Prod images to Docker Hub ========================='
             }
         }
     }
