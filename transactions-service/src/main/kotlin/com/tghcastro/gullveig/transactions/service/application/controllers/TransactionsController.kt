@@ -18,8 +18,11 @@ class TransactionsController(
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createOperation(@Valid @RequestBody requestBody: PostTransactionsRequest): PostTransactionsResponse {
-        val createdTransaction = this.transactionsService.createTransaction(TransactionsApiMapper.toTransactionModel(requestBody))
-        return TransactionsApiMapper.toPostTransactionResponse(createdTransaction)
+        val result = this.transactionsService.create(TransactionsApiMapper.toTransactionModel(requestBody))
+        if (result.failed()) {
+            throw Exception("error")
+        }
+        return TransactionsApiMapper.toPostTransactionResponse(result.value())
     }
 
     @GetMapping

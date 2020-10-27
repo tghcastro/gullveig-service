@@ -4,4 +4,5 @@ import com.tghcastro.gullveig.transactions.service.domain.models.Transactions
 
 interface TransactionsRepository {
     fun getById(any: Long): Transactions
+    fun saveAndFlush(transaction: Transactions): Transactions
 }

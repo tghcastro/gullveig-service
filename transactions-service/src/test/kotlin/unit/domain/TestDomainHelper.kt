@@ -7,7 +7,7 @@ import java.util.*
 
 class TestDomainHelper {
     companion object {
-        fun getValidTransaction() : Transactions {
+        fun getValidExistentTransaction(): Transactions {
             return Transactions(
                     id = 1L,
                     ticker = "KO",
@@ -19,6 +19,12 @@ class TestDomainHelper {
                     costs = 0.51,
                     date = Date.from(Instant.now())
             )
+        }
+
+        fun getValidInexistentTransaction(): Transactions {
+            val transaction = getValidExistentTransaction()
+            transaction.id = null
+            return transaction
         }
     }
 }

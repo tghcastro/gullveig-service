@@ -1,6 +1,7 @@
 package com.tghcastro.gullveig.transactions.service.domain.models
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.tghcastro.gullveig.transactions.service.domain.results.DomainResult
 import java.util.*
 import javax.persistence.*
 import javax.validation.constraints.DecimalMin
@@ -36,4 +37,9 @@ class Transactions(
 
         @DecimalMin("0.1", message = "Transaction must have units greater than 0.1")
         var units: Double
-)
+) {
+
+    fun validate(): DomainResult<Transactions> {
+        return DomainResult.success(this)
+    }
+}
