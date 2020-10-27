@@ -54,6 +54,13 @@ gradle clean build
 
 docker-compose -f .environment/docker-compose.local.yml up --build --remove-orphans --force-recreate
 
+
+# Starting test environment (jenkins - portainer[soon] - wiremock[soon] - cassandra[soon] - kafka[soon])
+docker-compose -f .environment/docker-compose.test.yml up --build --remove-orphans --force-recreate
+
+# Get Jenkins admin password (inside Jenkins container)
+cat /var/jenkins_home/secrets/initialAdminPassword
+
 ```
 
 

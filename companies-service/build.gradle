@@ -2,6 +2,7 @@ plugins {
     id "java"
     id "org.springframework.boot" version "${springBootVersion}"
     id "io.spring.dependency-management"
+    id "com.palantir.docker" version "0.25.0"
 }
 
 group = "${serviceGroup}"
@@ -36,4 +37,11 @@ jar {
         attributes 'Main-Class': 'com.tghcastro.gullveig.companies.service.CompaniesServiceApplication'
     }
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+docker {
+    name "gullveig/${project.name}:${project.version}"
+    dockerfile file('Dockerfile')
+    files "build/libs/${project.name}-${project.version}.jar"
+    noCache true
 }
