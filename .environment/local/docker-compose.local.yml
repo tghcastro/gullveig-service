@@ -4,8 +4,8 @@ services:
   companies-service:
     container_name: companies-service
     build:
-      context: ..
-      dockerfile: ./companies-service/Dockerfile
+      context: ../..
+      dockerfile: ../../companies-service/Dockerfile
     image: gullveig/companies-service
     networks:
       - local-network
@@ -17,8 +17,8 @@ services:
   stocks-service:
     container_name: stocks-service
     build:
-      context: ..
-      dockerfile: ./stocks-service/Dockerfile
+      context: ../..
+      dockerfile: ../../stocks-service/Dockerfile
     image: gullveig/stocks-service
     networks:
       - local-network

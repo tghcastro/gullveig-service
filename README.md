@@ -52,11 +52,12 @@ docker run -p 8070:8070 -e SPRING_PROFILES_ACTIVE=local --name transactions-serv
 ```shell script
 gradle clean build
 
-docker-compose -f .environment/docker-compose.local.yml up --build --remove-orphans --force-recreate
+docker-compose -f .environment/local/docker-compose.local.yml up --build --remove-orphans --force-recreate
 
 
-# Starting test environment (jenkins - portainer[soon] - wiremock[soon] - cassandra[soon] - kafka[soon])
-docker-compose -f .environment/docker-compose.test.yml up --build --remove-orphans --force-recreate
+# Starting test environment (jenkins - portainer - wiremock - cassandra[soon] - kafka[soon])
+docker-compose -f .environment/test/docker-compose.test.yml down
+docker-compose -f .environment/test/docker-compose.test.yml up -d --build --force-recreate --remove-orphans
 
 # Get Jenkins admin password (inside Jenkins container)
 cat /var/jenkins_home/secrets/initialAdminPassword
