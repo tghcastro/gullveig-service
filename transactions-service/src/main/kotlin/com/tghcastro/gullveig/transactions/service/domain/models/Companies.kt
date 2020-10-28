@@ -1,4 +1,4 @@
-package com.tghcastro.gullveig.transactions.service.tests.unit.domain
+package com.tghcastro.gullveig.transactions.service.domain.models
 
 class Companies(
         var id: Long,

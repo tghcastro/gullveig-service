@@ -4,8 +4,8 @@ import com.tghcastro.gullveig.transactions.service.application.controllers.contr
 import com.tghcastro.gullveig.transactions.service.application.controllers.contracts.PostTransactionsRequest
 import com.tghcastro.gullveig.transactions.service.application.controllers.contracts.PostTransactionsResponse
 import com.tghcastro.gullveig.transactions.service.application.controllers.contracts.TransactionType
-import com.tghcastro.gullveig.transactions.service.tests.unit.domain.DomainTransactionType
-import com.tghcastro.gullveig.transactions.service.tests.unit.domain.Transactions
+import com.tghcastro.gullveig.transactions.service.domain.models.DomainTransactionType
+import com.tghcastro.gullveig.transactions.service.domain.models.Transactions
 
 class TransactionsApiMapper {
     companion object {

@@ -1,5 +1,8 @@
 package com.tghcastro.gullveig.transactions.service.tests.unit.domain
 
+import com.tghcastro.gullveig.transactions.service.domain.models.Companies
+import com.tghcastro.gullveig.transactions.service.domain.models.DomainTransactionType
+import com.tghcastro.gullveig.transactions.service.domain.models.Transactions
 import java.time.Instant
 import java.util.*
 

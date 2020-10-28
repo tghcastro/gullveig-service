@@ -1,4 +1,4 @@
-package com.tghcastro.gullveig.transactions.service.tests.unit.domain
+package com.tghcastro.gullveig.transactions.service.domain.models
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.tghcastro.gullveig.transactions.service.domain.results.DomainResult

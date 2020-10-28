@@ -2,6 +2,7 @@ package com.tghcastro.gullveig.transactions.service.tests.unit.domain.services
 
 import com.tghcastro.gullveig.transactions.service.domain.interfaces.CompaniesServiceClient
 import com.tghcastro.gullveig.transactions.service.domain.interfaces.TransactionsRepository
+import com.tghcastro.gullveig.transactions.service.domain.services.TransactionsDomainService
 import org.junit.jupiter.api.BeforeEach
 import org.mockito.Mockito
 

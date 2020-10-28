@@ -1,10 +1,10 @@
-package com.tghcastro.gullveig.transactions.service.tests.unit.domain.services
+package com.tghcastro.gullveig.transactions.service.domain.services
 
 import com.tghcastro.gullveig.transactions.service.domain.interfaces.CompaniesServiceClient
 import com.tghcastro.gullveig.transactions.service.domain.interfaces.TransactionsRepository
 import com.tghcastro.gullveig.transactions.service.domain.interfaces.TransactionsService
+import com.tghcastro.gullveig.transactions.service.domain.models.Transactions
 import com.tghcastro.gullveig.transactions.service.domain.results.DomainResult
-import com.tghcastro.gullveig.transactions.service.tests.unit.domain.Transactions
 import org.springframework.stereotype.Service
 
 @Service
