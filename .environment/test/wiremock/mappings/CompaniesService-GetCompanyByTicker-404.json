@@ -1,11 +1,12 @@
 {
+  "priority": 5,
   "request": {
     "method": "GET",
-    "urlPattern": ".*\\/api\\/v1\\/companies.*"
+    "urlPattern": ".*\\/api\\/v1\\/companies/notfound"
   },
   "response": {
-    "status": 200,
-    "body": "{\"id\":1,\"name\":\"Coca Cola Co.\",\"sector\":\"Consumer Defensive\",\"tickers\":[\"KO\"]}",
+    "status": 404,
+    "body": "{}",
     "headers": {
       "Content-Type": "application/json"
     }
