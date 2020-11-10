@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": ".*\\/api\\/v1\\/companies.*"
+  },
+  "response": {
+    "status": 200,
+    "body": "{\"id\":1,\"name\":\"Coca Cola Co.\",\"sector\":\"Consumer Defensive\",\"tickers\":[\"KO\"]}",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
