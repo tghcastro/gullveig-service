@@ -149,77 +149,15 @@
 								}
 							},
 							"response": []
-						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
-				},
-				{
-					"name": "Sectors",
-					"item": [
-						{
-							"name": "GET SECTORS",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "http://localhost:{{companies-service-port}}/api/v1/sectors",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "{{companies-service-port}}",
-									"path": [
-										"api",
-										"v1",
-										"sectors"
-									]
-								}
-							},
-							"response": []
 						},
 						{
-							"name": "GET SECTORS BY ID",
-							"event": [
-								{
-									"listen": "prerequest",
-									"script": {
-										"id": "ce749b11-1944-4539-9d48-264852fed801",
-										"exec": [
-											"pm.globals.set(\"sector-id\", \"1\");"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "http://localhost:{{companies-service-port}}/api/v1/sectors/{{sector-id}}",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "{{companies-service-port}}",
-									"path": [
-										"api",
-										"v1",
-										"sectors",
-										"{{sector-id}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "POST SECTORS",
+							"name": "POST STOCK",
 							"request": {
 								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"Consumer Staples\",\r\n    \"enabled\": true\r\n}",
+									"raw": "{\n    \"name\": \"Coca-Cola Co.\",\n    \"enabled\": true,\n    \"sector\": {\n        \"id\": 1\n    }\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -227,7 +165,7 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:{{companies-service-port}}/api/v1/sectors",
+									"raw": "http://localhost:{{companies-service-port}}/api/v1/companies/1/KO",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -236,60 +174,9 @@
 									"path": [
 										"api",
 										"v1",
-										"sectors"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "PUT SECTORS",
-							"request": {
-								"method": "PUT",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"Updated Sector\",\r\n    \"enabled\": false\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:{{companies-service-port}}/api/v1/sectors/1",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "{{companies-service-port}}",
-									"path": [
-										"api",
-										"v1",
-										"sectors",
-										"1"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "DELETE SECTOR",
-							"request": {
-								"method": "DELETE",
-								"header": [],
-								"url": {
-									"raw": "http://localhost:{{companies-service-port}}/api/v1/sectors/1",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "{{companies-service-port}}",
-									"path": [
-										"api",
-										"v1",
-										"sectors",
-										"1"
+										"companies",
+										"1",
+										"KO"
 									]
 								}
 							},
@@ -317,26 +204,6 @@
 									"path": [
 										"actuator",
 										"prometheus"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "METRICS",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "http://localhost:{{companies-service-port}}/actuator/metrics",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "{{companies-service-port}}",
-									"path": [
-										"actuator",
-										"metrics"
 									]
 								}
 							},
@@ -401,6 +268,26 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "METRICS",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{companies-service-port}}/actuator/metrics",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{companies-service-port}}",
+									"path": [
+										"actuator",
+										"metrics"
+									]
+								}
+							},
+							"response": []
 						}
 					],
 					"protocolProfileBehavior": {},
@@ -410,7 +297,214 @@
 			"protocolProfileBehavior": {}
 		},
 		{
-			"name": "shares-data-service",
+			"name": "transactions-service",
+			"item": [
+				{
+					"name": "Transactions",
+					"item": [
+						{
+							"name": "Create transaction",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"ticker\": \"KO\",\r\n    \"date\": \"2020-10-26T13:10:07.462+0000\",\r\n    \"costs\": 0.51,\r\n    \"currencyCode\": \"USD\",\r\n    \"price\": 50.0,\r\n    \"tags\": [\r\n        \"SURE PASSSIVE INCOME\"\r\n    ],\r\n    \"type\": \"SELL\",\r\n    \"units\": 10.0\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:{{transactions-service-port}}/api/v1/transactions/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{transactions-service-port}}",
+									"path": [
+										"api",
+										"v1",
+										"transactions",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get existent transaction by ID",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Coca-Cola Co.\",\n    \"enabled\": true,\n    \"sector\": {\n        \"id\": 1\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:{{transactions-service-port}}/api/v1/transactions/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{transactions-service-port}}",
+									"path": [
+										"api",
+										"v1",
+										"transactions",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Actuator",
+					"item": [
+						{
+							"name": "PROMETHEUS",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{transactions-service-port}}/actuator/prometheus",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{transactions-service-port}}",
+									"path": [
+										"actuator",
+										"prometheus"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "HEALTH",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{transactions-service-port}}/actuator/health",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{transactions-service-port}}",
+									"path": [
+										"actuator",
+										"health"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ACTUATOR",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{transactions-service-port}}/actuator/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{transactions-service-port}}",
+									"path": [
+										"actuator",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "INFO",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{transactions-service-port}}/actuator/info",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{transactions-service-port}}",
+									"path": [
+										"actuator",
+										"info"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "METRICS",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{transactions-service-port}}/actuator/metrics",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{transactions-service-port}}",
+									"path": [
+										"actuator",
+										"metrics"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "47080350-3731-4003-ac6d-a33310fbea83",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "e8d00dec-b546-4178-ad5b-5dcbc43215c9",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "stocks-service",
 			"item": [
 				{
 					"name": "Actuator",
@@ -596,40 +690,6 @@
 							"response": []
 						},
 						{
-							"name": "Get an inexistent stock by id",
-							"event": [
-								{
-									"listen": "prerequest",
-									"script": {
-										"id": "f73da059-45c4-41a1-a356-8b76a88faf9f",
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "http://localhost:{{stocks-service-port}}/api/v1/stocks/999999",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "{{stocks-service-port}}",
-									"path": [
-										"api",
-										"v1",
-										"stocks",
-										"999999"
-									]
-								}
-							},
-							"response": []
-						},
-						{
 							"name": "Create stock",
 							"event": [
 								{
@@ -666,6 +726,40 @@
 										"api",
 										"v1",
 										"stocks"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get an inexistent stock by id",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "f73da059-45c4-41a1-a356-8b76a88faf9f",
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{stocks-service-port}}/api/v1/stocks/999999",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{stocks-service-port}}",
+									"path": [
+										"api",
+										"v1",
+										"stocks",
+										"999999"
 									]
 								}
 							},
