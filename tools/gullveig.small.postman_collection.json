@@ -1,0 +1,94 @@
+{
+	"info": {
+		"_postman_id": "6a544ca5-0ebe-4e81-8d86-4ac6b953238e",
+		"name": "gullveig Copy",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "companies-service",
+			"item": [
+				{
+					"name": "Companies",
+					"item": [
+						{
+							"name": "GET Companies",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{companies-service-port}}/api/v1/companies",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{companies-service-port}}",
+									"path": [
+										"api",
+										"v1",
+										"companies"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Sectors",
+					"item": [
+						{
+							"name": "GET Sectors",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:{{companies-service-port}}/api/v1/sectors",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "{{companies-service-port}}",
+									"path": [
+										"api",
+										"v1",
+										"sectors"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "3505a626-97fe-4876-bb70-3857d8be6a30",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "31efce58-e2c2-4d39-b4a5-fb9fc1787643",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
