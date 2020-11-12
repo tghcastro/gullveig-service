@@ -22,6 +22,10 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}"
     implementation "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
     implementation "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}"
+    implementation "io.ktor:ktor-client-core:${ktorVersion}"
+    implementation "io.ktor:ktor-utils-jvm:${ktorVersion}"
+    implementation "io.ktor:ktor-client-apache:${ktorVersion}"
+    implementation "io.ktor:ktor-client-logging-jvm:${ktorVersion}"
     runtimeOnly "org.postgresql:postgresql:${postgresSqlVersion}"
     runtimeOnly "com.h2database:h2:${h2DbVersion}"
     testImplementation(enforcedPlatform("org.junit:junit-bom:${junitJupiterVersion}"))

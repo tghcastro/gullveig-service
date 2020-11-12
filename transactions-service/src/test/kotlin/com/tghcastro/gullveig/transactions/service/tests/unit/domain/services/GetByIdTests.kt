@@ -1,11 +1,11 @@
-package unit.domain.service
+package com.tghcastro.gullveig.transactions.service.tests.unit.domain.services
 
+import com.tghcastro.gullveig.transactions.service.tests.unit.domain.TestDomainHelper
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito
-import unit.domain.TestDomainHelper
 
 class GetByIdTests : ServiceTestsBase() {
     @Test
