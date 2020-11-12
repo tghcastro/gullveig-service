@@ -20,7 +20,7 @@ class TransactionsController(
     fun createOperation(@Valid @RequestBody requestBody: PostTransactionsRequest): PostTransactionsResponse {
         val result = this.transactionsService.create(TransactionsApiMapper.toTransactionModel(requestBody))
         if (result.failed()) {
-            throw Exception("error")
+            throw Exception(result.error())
         }
         return TransactionsApiMapper.toPostTransactionResponse(result.value())
     }
