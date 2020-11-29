@@ -2,15 +2,15 @@ package com.tghcastro.gullveig.transactions.service.infrastructure.clients.compa
 
 import de.undercouch.gradle.tasks.download.org.apache.http.client.methods.CloseableHttpResponse
 
-class ClientResult<T> {
+class HttpClientResult<T> {
     private val value: T?
     private val success: Boolean
     private val clientError: ClientError?
 
-    constructor(value: T?, success: Boolean, errorMessage: ClientError?) {
+    constructor(value: T?, success: Boolean, clientError: ClientError?) {
         this.value = value
         this.success = success
-        this.clientError = errorMessage
+        this.clientError = clientError
     }
 
     constructor(value: T) {
@@ -27,13 +27,13 @@ class ClientResult<T> {
         return success
     }
 
-    fun onSuccess(function: () -> ClientResult<T>): ClientResult<T> {
+    fun onSuccess(function: () -> HttpClientResult<T>): HttpClientResult<T> {
         return if (succeeded()) {
             return function.invoke()
         } else this
     }
 
-    fun onFailure(function: () -> ClientResult<T>): ClientResult<T> {
+    fun onFailure(function: () -> HttpClientResult<T>): HttpClientResult<T> {
         return if (failed()) {
             return function.invoke()
         } else this
@@ -54,22 +54,28 @@ class ClientResult<T> {
     }
 
     companion object {
-        fun <T> success(value: T): ClientResult<T> {
-            return ClientResult(value, true, null)
+        fun <T> success(value: T): HttpClientResult<T> {
+            return HttpClientResult(value, true, null)
         }
 
-        fun <T> failure(httpResponse: CloseableHttpResponse, message: String): ClientResult<T> {
+        fun <T> failure(httpResponse: CloseableHttpResponse, message: String, errorType: ClientErrorType): HttpClientResult<T> {
             val clientError = ClientError()
             clientError.code = httpResponse.statusLine.statusCode
             clientError.message = message
             clientError.rawResponse = httpResponse.toString()
-            return ClientResult(null, false, clientError)
+            clientError.type = errorType
+            return HttpClientResult(null, false, clientError)
         }
     }
 
     class ClientError {
+        var type: ClientErrorType = ClientErrorType.SERVER
         var code: Int? = null
         var message: String? = null
         var rawResponse: String? = null
+    }
+
+    enum class ClientErrorType {
+        CLIENT, SERVER
     }
 }

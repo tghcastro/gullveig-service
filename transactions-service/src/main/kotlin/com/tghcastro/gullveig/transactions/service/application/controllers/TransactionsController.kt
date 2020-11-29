@@ -3,6 +3,7 @@ package com.tghcastro.gullveig.transactions.service.application.controllers
 import com.tghcastro.gullveig.transactions.service.application.controllers.contracts.GetTransactionsResponse
 import com.tghcastro.gullveig.transactions.service.application.controllers.contracts.PostTransactionsRequest
 import com.tghcastro.gullveig.transactions.service.application.controllers.contracts.PostTransactionsResponse
+import com.tghcastro.gullveig.transactions.service.application.controllers.error.TransactionServiceException
 import com.tghcastro.gullveig.transactions.service.application.controllers.mappers.TransactionsApiMapper
 import com.tghcastro.gullveig.transactions.service.domain.interfaces.TransactionsService
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,7 +21,7 @@ class TransactionsController(
     fun createOperation(@Valid @RequestBody requestBody: PostTransactionsRequest): PostTransactionsResponse {
         val result = this.transactionsService.create(TransactionsApiMapper.toTransactionModel(requestBody))
         if (result.failed()) {
-            throw Exception(result.error())
+            throw TransactionServiceException(result)
         }
         return TransactionsApiMapper.toPostTransactionResponse(result.value())
     }

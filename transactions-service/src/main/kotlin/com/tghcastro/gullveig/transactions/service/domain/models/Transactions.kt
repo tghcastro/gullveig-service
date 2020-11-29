@@ -2,6 +2,7 @@ package com.tghcastro.gullveig.transactions.service.domain.models
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.tghcastro.gullveig.transactions.service.domain.results.DomainResult
+import com.tghcastro.gullveig.transactions.service.domain.results.FailureType
 import java.util.*
 import javax.persistence.*
 import javax.validation.constraints.NotEmpty
@@ -30,13 +31,13 @@ class Transactions(
 
     fun validate(): DomainResult<Transactions> {
         if (this.price <= 0) {
-            return DomainResult.failure(this, "Transaction must have a price greater than 0.0 [Price: $price]")
+            return DomainResult.failure(this, "Transaction must have a price greater than 0.0 [Price: $price]", FailureType.CLIENT)
         }
         if (this.units <= 0) {
-            return DomainResult.failure(this, "Transaction must have units greater than 0.0 [Units: $units]")
+            return DomainResult.failure(this, "Transaction must have units greater than 0.0 [Units: $units]", FailureType.CLIENT)
         }
         if (this.costs < 0) {
-            return DomainResult.failure(this, "Transaction must have costs of at least 0 [Costs: $costs]")
+            return DomainResult.failure(this, "Transaction must have costs of at least 0 [Costs: $costs]", FailureType.CLIENT)
         }
         return DomainResult.success(this)
     }

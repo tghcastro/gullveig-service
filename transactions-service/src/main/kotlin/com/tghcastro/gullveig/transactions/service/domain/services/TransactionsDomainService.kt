@@ -28,11 +28,11 @@ class TransactionsDomainService(
     }
 
     private fun verifyIfStockExists(transaction: Transactions): DomainResult<Transactions> {
-        val clientResult = companiesServiceClient.getCompanyByTicker(transaction.ticker)
-        if (clientResult.succeeded()) {
+        val companiesServiceClient = companiesServiceClient.getCompanyByTicker(transaction.ticker)
+        if (companiesServiceClient.succeeded()) {
             return DomainResult.success(transaction)
         }
-        return DomainResult.failure(transaction, clientResult.error())
+        return DomainResult.failure(transaction, companiesServiceClient.error())
     }
 
 }

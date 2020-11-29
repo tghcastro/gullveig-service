@@ -9,15 +9,15 @@ import org.springframework.stereotype.Service
 
 @Service
 class CompaniesServiceClientImpl(val httpClient: CompaniesServiceHttpClient) : CompaniesServiceClient {
-    override fun getCompanyByTicker(ticker: String): ClientResult<Companies> {
+    override fun getCompanyByTicker(ticker: String): HttpClientResult<Companies> {
         val response = httpClient.getCompanyByTicker(ticker)
 
         if (response.statusLine.statusCode >= 400 && response.statusLine.statusCode < 500) {
-            return ClientResult.failure(response, "Company not found by ticker [$ticker]")
+            return HttpClientResult.failure(response, "Company not found by ticker [$ticker]", HttpClientResult.ClientErrorType.CLIENT)
         }
 
         if (response.statusLine.statusCode >= 500) {
-            return ClientResult.failure(response, "Downstream error")
+            return HttpClientResult.failure(response, "Downstream error", HttpClientResult.ClientErrorType.SERVER)
         }
 
         val mapper = ObjectMapper().registerModule(KotlinModule())
@@ -29,6 +29,6 @@ class CompaniesServiceClientImpl(val httpClient: CompaniesServiceHttpClient) : C
                 tickers = getCompanyByTickerResponse.tickers,
                 sector = getCompanyByTickerResponse.sector)
 
-        return ClientResult.success(company)
+        return HttpClientResult.success(company)
     }
 }
