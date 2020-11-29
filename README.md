@@ -47,17 +47,13 @@ docker build -t gullveig/transactions-service -f ./transactions-service/Dockerfi
 docker run -p 8070:8070 -e SPRING_PROFILES_ACTIVE=local --name transactions-service gullveig/transactions-service
 ```
 
-## All Environment Commands
+## Environment Commands
 
 ```shell script
-gradle clean build
-
-docker-compose -f .environment/local/docker-compose.local.yml up --build --remove-orphans --force-recreate
-
-
 # Starting test environment (jenkins - portainer - wiremock - cassandra[soon] - kafka[soon])
 docker-compose -f .environment/test/docker-compose.test.yml down
 docker-compose -f .environment/test/docker-compose.test.yml up -d --build --force-recreate --remove-orphans
+docker-compose -f .environment/test/docker-compose.test.yml build
 
 # Get Jenkins admin password (inside Jenkins container)
 cat /var/jenkins_home/secrets/initialAdminPassword

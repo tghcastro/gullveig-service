@@ -1,5 +1,7 @@
 package com.tghcastro.gullveig.transactions.service.domain.results
 
+import com.tghcastro.gullveig.transactions.service.infrastructure.clients.companies.ClientResult
+
 class DomainResult<T> {
     private val value: T
     private val success: Boolean
@@ -57,6 +59,11 @@ class DomainResult<T> {
         }
 
         fun <T> failure(value: T, errorMessage: String): DomainResult<T> {
+            return DomainResult(value, false, errorMessage)
+        }
+
+        fun <T> failure(value: T, clientError: ClientResult.ClientError?): DomainResult<T> {
+            val errorMessage = "${clientError?.message}[${clientError?.code}]"
             return DomainResult(value, false, errorMessage)
         }
     }

@@ -2,11 +2,11 @@
   "priority": 5,
   "request": {
     "method": "GET",
-    "urlPattern": ".*\\/api\\/v1\\/companies/notfound"
+    "urlPattern": ".*\\/api\\/v1\\/companies/NOTFOUND"
   },
   "response": {
     "status": 404,
-    "body": "{}",
+    "body": "{\"timestamp\":\"2020-11-29T09:44:35.326+0000\",\"status\":404,\"error\":\"Not Found\",\"message\":\"Company not found [ticker:NOTFOUND]\",\"path\":\"/api/v1/companies/NOTFOUND\"}",
     "headers": {
       "Content-Type": "application/json"
     }

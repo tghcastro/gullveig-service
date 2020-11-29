@@ -2,11 +2,11 @@
   "priority": 5,
   "request": {
     "method": "GET",
-    "urlPattern": ".*\\/api\\/v1\\/companies/error"
+    "urlPattern": ".*\\/api\\/v1\\/companies/ERROR"
   },
   "response": {
     "status": 500,
-    "body": "{}",
+    "body": "{\"timestamp\":\"2020-11-29T09:44:06.490+0000\",\"status\":500,\"error\":\"Internal Server Error\",\"message\":\"No value present\",\"path\":\"/api/v1/companies/ERROR\"}",
     "headers": {
       "Content-Type": "application/json"
     }

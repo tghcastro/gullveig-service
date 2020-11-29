@@ -1,9 +1,8 @@
 package com.tghcastro.gullveig.transactions.service.infrastructure.clients.companies
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.tghcastro.gullveig.transactions.service.infrastructure.clients.companies.contracts.GetCompanyByTicker
-import org.apache.http.client.methods.HttpGet
-import org.apache.http.impl.client.HttpClientBuilder
+import de.undercouch.gradle.tasks.download.org.apache.http.client.methods.CloseableHttpResponse
+import de.undercouch.gradle.tasks.download.org.apache.http.client.methods.HttpGet
+import de.undercouch.gradle.tasks.download.org.apache.http.impl.client.HttpClientBuilder
 import org.springframework.stereotype.Service
 import java.net.URI
 
@@ -11,7 +10,7 @@ import java.net.URI
 class CompaniesServiceHttpClient {
 
     //TODO: Refactor this
-    fun getCompanyByTicker(ticker: String): GetCompanyByTicker? {
+    fun getCompanyByTicker(ticker: String): CloseableHttpResponse {
         val url = URI("http://localhost:9002/api/v1/companies/$ticker")
         //val url = URI("http://localhost:8080/api/v1/companies/$ticker")
 
@@ -19,10 +18,6 @@ class CompaniesServiceHttpClient {
 
         val getRequest = HttpGet(url)
         getRequest.addHeader("X-Mapping-Id", "MyValue")
-        val response = client.execute(getRequest)
-
-        val mapper = ObjectMapper()
-
-        return mapper.readValue(response.entity.content, GetCompanyByTicker::class.java)
+        return client.execute(getRequest)
     }
 }
